@@ -16,11 +16,11 @@ model Idea {
   dislikes    Int        @default(0)
   userVotes   UserVote[]
 
-  eventId String @default(cuid())
-  event   Event  @relation(fields: [eventId], references: [id])
+  eventId     String
+  event       Event  @relation(fields: [eventId], references: [id])
 
-  userId String
-  author User   @relation(fields: [userId], references: [id])
+  userId      String
+  author      User   @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -36,13 +36,13 @@ model User {
 }
 
 model UserVote {
-  id     String   @id @default(cuid())
-  type   VoteType
-  userId String
-  ideaId String
+  id        String   @id @default(cuid())
+  type      VoteType
+  userId    String
+  ideaId    String
 
-  user User @relation(fields: [userId], references: [id])
-  idea Idea @relation(fields: [ideaId], references: [id])
+  user      User @relation(fields: [userId], references: [id])
+  idea      Idea @relation(fields: [ideaId], references: [id])
 }
 
 enum VoteType {
@@ -54,9 +54,9 @@ model Event {
   id          String  @id @default(cuid())
   name        String
   description String?
-
-  userId String
-  author User   @relation(fields: [userId], references: [id])
-  chatId String @default("")
-  Idea   Idea[]
+  
+  userId      String
+  author      User   @relation(fields: [userId], references: [id])
+  chatId      String @default("")
+  ideas       Idea[]
 }
