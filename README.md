@@ -3,6 +3,7 @@
 ## TO-DO:
 - idea creation page frontend
     - forms
+    - edit layout to be nicer
 - landing page frontend 
     - framer
 - telegram integration:
@@ -11,6 +12,9 @@
 - api routes:
     - create idea within event
     - create event
+- event idea board page:
+    - implement upvote and downvote api
+    - sort by upvotes?
 
 currently: event id is HARDCODED in IdeaBoard.tsx line 45 (to be pulled from supabase)
 

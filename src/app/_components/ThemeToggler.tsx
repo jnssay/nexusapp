@@ -3,14 +3,14 @@
 // ThemeToggler.tsx
 import { useState, useEffect } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { SunIcon, MoonIcon, ColorWheelIcon, MixerHorizontalIcon } from '@radix-ui/react-icons';
+import { FaCircle } from "react-icons/fa";
 import { cn } from '~/lib/utils'; // Adjust the path according to your project structure
 
 const themes = [
-    { name: 'Default', value: 'default', icon: SunIcon },
-    { name: 'Pink', value: 'pink', icon: ColorWheelIcon },
-    { name: 'Blue', value: 'blue', icon: MixerHorizontalIcon },
-    { name: 'Dark', value: 'dark', icon: MoonIcon },
+    { name: 'Default', value: 'default' },
+    { name: 'Ness Theme', value: 'pink' },
+    { name: 'Blue', value: 'blue' },
+    { name: 'Dark', value: 'dark' },
 ];
 
 export function ThemeToggler() {
@@ -45,16 +45,16 @@ export function ThemeToggler() {
         applyTheme(themeValue);
     };
 
-    const CurrentIcon = themes.find((t) => t.value === theme)?.icon || PaletteIcon;
+
 
     return (
         <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
                 <button
-                    className="rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
+                    className="rounded-md p-2 focus:outline-none"
                     aria-label="Change Theme"
                 >
-                    <CurrentIcon className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+                    <FaCircle className="w-8 h-8 text-primary hover:text-primary" />
                 </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content
@@ -74,7 +74,6 @@ export function ThemeToggler() {
                             theme === t.value && 'font-semibold'
                         )}
                     >
-                        <t.icon className="mr-2 h-4 w-4" />
                         {t.name}
                     </DropdownMenu.Item>
                 ))}

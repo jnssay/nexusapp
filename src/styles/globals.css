@@ -5,7 +5,7 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
+    --card: 0 0% 98;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
@@ -32,7 +32,7 @@
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 0 0% 10%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
@@ -66,22 +66,40 @@
 }
 
 [data-theme='pink'] {
-  --background: 340, 100%, 97%; /* light pink background */
-  --foreground: 340, 100%, 10%; /* dark text */
-  --primary: 340, 100%, 50%; /* pink theme primary */
+  --background: 330, 100%, 92%; /* light pink background */
+  --foreground: 315, 100%, 33%; /* dark text */
+  --primary: 320, 100%, 50%; /* pink theme primary */
   --primary-foreground: 340, 100%, 95%;
-  --secondary: 340, 100%, 90%; /* pink */
-  --secondary-foreground: 200, 100%, 95%;
-  --card: 340, 100%, 96%;
+  --secondary: 330 100%, 80%; /* pink */
+  --secondary-foreground: 340, 100%, 10%; 
+  --card: 50, 100%, 90%;
+  --card-foreground: 320, 100%, 45%;
 }
 
 /* Blue theme */
 [data-theme='blue'] {
-  --background: 200, 100%, 97%; /* light blue background */
-  --foreground: 200, 100%, 10%; /* dark text */
-  --primary: 200, 100%, 50%; /* blue theme primary */
-  --primary-foreground: 200, 100%, 95%;
-  --secondary: 200, 100%, 90%; /* blue */
-  --secondary-foreground: 340, 100%, 95%;
-  --card: 200, 100%, 96%;
+  --background: 200, 100%, 93%; /* light blue background */
+  --foreground: 220, 100%, 10%; /* dark text */
+  --primary: 220, 100%, 50%; /* blue theme primary */
+  --primary-foreground: 220, 100%, 95%;
+  --secondary: 220, 100%, 90%; /* blue */
+  --secondary-foreground: 340, 100%, 10%;   
+  --card: 220, 100%, 96%;
+  --card-foreground: 220, 100%, 10%;
+}
+
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--secondary));
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsla(var(--foreground));
+  border-radius: 6px;
 }
