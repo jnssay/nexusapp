@@ -151,13 +151,13 @@ const IdeaBoard: React.FC = () => {
                 type="text"
                 value={heading}
                 onChange={(e) => setHeading(e.target.value)}
-                className="text-4xl font-bold mb-6 text-center w-full focus:outline-none"
+                className="text-4xl font-bold mb-6 text-center w-full bg-transparent"
             />
             <input
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="text-xl mb-20 text-center w-full focus:outline-none"
+                className="text-xl mb-20 text-center w-full bg-transparent"
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {ideas.map((idea) => (
