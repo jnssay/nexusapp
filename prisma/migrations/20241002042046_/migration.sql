@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Idea" ALTER COLUMN "eventId" DROP DEFAULT;

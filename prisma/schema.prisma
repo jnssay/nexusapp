@@ -9,37 +9,40 @@ datasource db {
 }
 
 model Idea {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
   description String?
-  likes       Int      @default(0)
-  dislikes    Int      @default(0)
+  likes       Int        @default(0)
+  dislikes    Int        @default(0)
   userVotes   UserVote[]
 
-  userId      String
-  author      User     @relation(fields: [userId], references: [id])
+  eventId String @default(cuid())
+  event   Event  @relation(fields: [eventId], references: [id])
+
+  userId String
+  author User   @relation(fields: [userId], references: [id])
 }
 
 model User {
-  id         String    @id @default(cuid())
-  telegramId BigInt    @unique
+  id         String  @id @default(cuid())
+  telegramId BigInt  @unique
   firstName  String
   lastName   String?
   username   String?
 
-  events     Event[]
-  ideas      Idea[]
-  userVotes  UserVote[]
+  events    Event[]
+  ideas     Idea[]
+  userVotes UserVote[]
 }
 
 model UserVote {
-  id       String  @id @default(cuid())
-  type     VoteType
-  userId   String
-  ideaId   String
+  id     String   @id @default(cuid())
+  type   VoteType
+  userId String
+  ideaId String
 
-  user     User    @relation(fields: [userId], references: [id])
-  idea     Idea    @relation(fields: [ideaId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  idea Idea @relation(fields: [ideaId], references: [id])
 }
 
 enum VoteType {
@@ -48,10 +51,12 @@ enum VoteType {
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   description String?
-  
-  userId      String
-  author      User     @relation(fields: [userId], references: [id])
+
+  userId String
+  author User   @relation(fields: [userId], references: [id])
+  chatId String @default("")
+  Idea   Idea[]
 }
