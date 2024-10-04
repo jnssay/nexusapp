@@ -139,7 +139,22 @@ npx prisma migrate dev
 
 <strong>Note: may take up to 5 minutes for migrations to apply</strong>
 
-<br>
+<be>
+
+### Database Migration
+**Editing from the schema instead of supabase and pushing to main**
+```
+npx prisma migrate dev # this generate and populate to production DB
+```
+
+
+**Editing from Supabase**
+```
+npx prisma db pull
+```
+
+
+
 
 ## Frontend:
 
