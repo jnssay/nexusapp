@@ -21,6 +21,8 @@ function bigIntToString(obj: any): any {
     return newObj;
 }
 
+// Get event by id
+// GET /api/events/:id
 export async function GET(
     request: Request,
     { params }: { params: { id: string } }
