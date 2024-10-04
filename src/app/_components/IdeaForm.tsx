@@ -25,12 +25,6 @@ const formSchema = z.object({
     description: z.string().min(10, {
         message: "Description must be at least 10 characters.",
     }),
-    date: z.date({
-        required_error: "A date is required.",
-    }),
-    attendees: z.number().min(1, {
-        message: "At least one attendee is required.",
-    }),
 })
 
 export default function IdeaForm() {

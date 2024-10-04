@@ -1,7 +1,7 @@
-
 import { HydrateClient } from "~/trpc/server";
 import Link from 'next/link';
 import { Button } from "~/components/ui/button";
+import DisplayInitData from "~/telegram/DisplayInitData";
 
 
 export default async function Home() {
@@ -13,6 +13,7 @@ export default async function Home() {
         <Link href={`/eventId`} className="mb-10"><Button>/eventId</Button></Link>
         idea creation form page is at:
         <Link href={`/newIdea`}><Button>/newIdea</Button></Link>
+        <DisplayInitData />
       </main>
     </HydrateClient>
   );

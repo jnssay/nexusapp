@@ -1,9 +1,9 @@
 import "~/styles/globals.css";
-import { Quicksand } from 'next/font/google'
-
+import { Quicksand } from 'next/font/google';
 import { type Metadata } from "next";
-
 import { TRPCReactProvider } from "~/trpc/react";
+import { InitDataProvider } from '~/telegram/InitDataContext';
+import TelegramInit from '~/telegram/TelegramInit';
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -15,16 +15,21 @@ const quicksand = Quicksand({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-quicksand',
-})
+});
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={quicksand.className}>
-      <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
-      </body>
-    </html>
+    <InitDataProvider>
+      <html lang="en" className={quicksand.className}>
+        <body>
+          <TRPCReactProvider>
+            {children}
+          </TRPCReactProvider>
+          <TelegramInit />
+        </body>
+      </html>
+    </InitDataProvider>
   );
 }
