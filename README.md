@@ -1,9 +1,6 @@
 # NexusMeet
 
 ## TO-DO:
-- idea creation page frontend
-    - forms
-    - edit layout to be nicer
 - landing page frontend 
     - framer
 - telegram integration:

@@ -1,16 +1,11 @@
 "use client"
 
-import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
 import Link from 'next/link';
 
-import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
-import { Calendar } from "~/components/ui/calendar"
 import {
     Form,
     FormControl,
@@ -22,11 +17,6 @@ import {
 } from "~/components/ui/form"
 import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "~/components/ui/popover"
 
 const formSchema = z.object({
     eventName: z.string().min(2, {
@@ -60,7 +50,8 @@ export default function IdeaForm() {
     }
 
     return (
-        <div className="max-w-md mx-auto h-screen justify-center items-center md:flex">
+        <div className="flex-col max-w-md mx-auto mt-10 md:mt-0 h-screen justify-center items-center md:flex">
+            <h1 className="font-bold text-xl mb-10">Create New Idea!</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
@@ -68,9 +59,9 @@ export default function IdeaForm() {
                         name="eventName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Event Name</FormLabel>
+                                <FormLabel>Idea Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Summer BBQ" {...field} />
+                                    <Input placeholder="Amazing Idea" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                     The name of your event idea.
@@ -88,76 +79,12 @@ export default function IdeaForm() {
                                 <FormControl>
                                     <Textarea
                                         placeholder="Tell us about your event idea..."
-                                        className="resize-none"
+                                        className="resize-none h-48 w-72 md:w-96"
                                         {...field}
                                     />
                                 </FormControl>
                                 <FormDescription>
                                     Briefly describe your event idea.
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="date"
-                        render={({ field }) => (
-                            <FormItem className="flex flex-col">
-                                <FormLabel>Date</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant={"outline"}
-                                                className={cn(
-                                                    "w-[240px] pl-3 text-left font-normal",
-                                                    !field.value && "text-muted-foreground"
-                                                )}
-                                            >
-                                                {field.value ? (
-                                                    format(field.value, "PPP")
-                                                ) : (
-                                                    <span>Pick a date</span>
-                                                )}
-                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={field.value}
-                                            onSelect={field.onChange}
-                                            disabled={(date) =>
-                                                date < new Date() || date < new Date("1900-01-01")
-                                            }
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-                                <FormDescription>
-                                    The planned date for your event.
-                                </FormDescription>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="attendees"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Expected Attendees</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        type="number"
-                                        {...field}
-                                        onChange={(e) => field.onChange(Number(e.target.value))}
-                                    />
-                                </FormControl>
-                                <FormDescription>
-                                    Estimated number of attendees.
                                 </FormDescription>
                                 <FormMessage />
                             </FormItem>
