@@ -21,6 +21,7 @@ import {
 import { TbThumbUpFilled, TbThumbDownFilled, TbCirclePlus } from 'react-icons/tb';
 import { ThemeToggler } from './ThemeToggler';
 import Link from 'next/link';
+import VoteButtons from '~/app/_components/VoteButtons';
 
 interface Idea {
     id: string;
@@ -41,14 +42,18 @@ interface Event {
     id: string;
     name: string;
     description?: string;
+    status: 'PENDING' | 'CONFIRMED' | 'DELETED' | 'COMPLETED';
     author: {
+        id: string;
         firstName: string;
         lastName?: string;
         username?: string;
         telegramId: string;
     };
     Idea: Idea[];
+    confirmedIdea?: Idea;
 }
+
 
 interface IdeaBoardProps {
     event: Event;
@@ -57,9 +62,41 @@ interface IdeaBoardProps {
 const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
     const { user } = useInitData();
     const [ideas, setIdeas] = useState<Idea[]>(event.Idea);
-    const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
+    const [selectedIdeaId, setSelectedIdeaId] = useState<string | null>(null);
+
+    const [eventData, setEventData] = useState<Event>(event);
+
+    const isEventAuthor = user?.id === eventData.author?.id;
+
+
 
     const sortedIdeas = [...ideas].sort((a, b) => b.likes - a.likes);
+
+    const handleConfirmIdea = async () => {
+        if (!selectedIdeaId) return;
+
+        try {
+            const response = await fetch(`/api/event/${eventData.id}/confirm`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ideaId: selectedIdeaId }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to confirm idea');
+            }
+
+            const updatedEvent = await response.json();
+            setEventData(updatedEvent);
+            setSelectedIdeaId(null);
+        } catch (error) {
+            console.error(error);
+            // Optionally show an error notification to the user
+            alert(`Error: ${(error as Error).message}`);
+        }
+    };
+
 
     const handleVote = async (ideaId: string, voteType: 'LIKE' | 'DISLIKE') => {
         try {
@@ -140,12 +177,15 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                         <h2 className="text-md text-foreground">by {event.author.firstName}</h2>
                     </div>
                     <div className="flex items-center md:gap-4 hidden md:flex md:ml-10">
-                        <Link href={`/event/${event.id}/newidea`}>
+                        {eventData.status !== 'COMPLETED' && (
+                            <Link href={`/event/${event.id}/newidea`}>
+                                <Button className="bg-primary text-primary-foreground flex items-center">
+                                    <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
+                                </Button>
+                            </Link>
 
-                            <Button className="bg-primary text-primary-foreground flex items-center">
-                                <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
-                            </Button>
-                        </Link>
+                        )}
+
 
                         <ThemeToggler />
                     </div>
@@ -154,101 +194,121 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
             {/* Mobile New Idea Button */}
             <div className="flex items-center justify-end md:hidden mb-6">
-                <Link href={`/event/${event.id}/newidea`}>
-                    <Button className="bg-primary text-primary-foreground flex items-center">
-                        <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
-                    </Button>
-                </Link>
+                {eventData.status !== 'COMPLETED' && (
+                    <Link href={`/event/${event.id}/newidea`}>
+                        <Button className="bg-primary text-primary-foreground flex items-center">
+                            <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
+                        </Button>
+                    </Link>
+                )}
             </div>
 
             {/* Scrollable Cards Container */}
-            <div className="flex overflow-y-auto px-4 md:px-10 custom-scrollbar">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {sortedIdeas.length > 0 ? (
-                        sortedIdeas.map((idea) => (
-                            <Card
-                                key={idea.id}
-                                onClick={() => setSelectedIdea(idea)}
-                                className="hover:shadow-lg transition-shadow duration-300 bg-card text-card-foreground"
-                            >
-                                <CardHeader>
-                                    <CardTitle className="truncate text-lg leading-tight">
-                                        {idea.title}
-                                    </CardTitle>
-                                    <CardDescription className="truncate text-card-foreground">
-                                        By {idea.author.firstName} {idea.author.lastName}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-sm text-card-foreground line-clamp-3">
-                                        {idea.description}
-                                    </p>
-                                </CardContent>
-                                <CardFooter>
-                                    <div className="flex items-center justify-between w-full">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleVote(idea.id, 'LIKE');
-                                            }}
-                                            className={`flex items-center px-2 py-1 rounded ${idea.userVote === 'LIKE'
-                                                ? 'border border-green-600 text-green-600'
-                                                : 'text-gray-500 hover:text-green-600'
-                                                }`}
-                                            aria-label="Upvote Idea"
-                                        >
-                                            <TbThumbUpFilled className="mr-1" />
-                                            {idea.likes}
-                                        </button>
 
-                                        {/* Downvote Button */}
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleVote(idea.id, 'DISLIKE');
-                                            }}
-                                            className={`flex items-center px-2 py-1 rounded ${idea.userVote === 'DISLIKE'
-                                                ? 'border border-red-600 text-red-600'
-                                                : 'text-gray-500 hover:text-red-600'
-                                                }`}
-                                            aria-label="Downvote Idea"
-                                        >
-                                            <TbThumbDownFilled className="mr-1" />
-                                            {idea.dislikes}
-                                        </button>
 
-                                    </div>
-                                </CardFooter>
-                            </Card>
-                        ))
-                    ) : (
-                        <div className="col-span-full text-center">
-                            <p className="text-lg text-gray-500">No ideas yet. Be the first to add one!</p>
-                        </div>
+            {eventData.status === 'COMPLETED' ? (
+                <div>
+                    <h2 className="text-xl font-bold">Event Completed</h2>
+                    <p>The confirmed idea is:</p>
+                    {eventData.confirmedIdea && (
+                        <Card className="bg-card text-card-foreground">
+                            <CardHeader>
+                                <CardTitle className="truncate text-lg leading-tight">
+                                    {eventData.confirmedIdea.title}
+                                </CardTitle>
+                                <CardDescription className="truncate text-card-foreground">
+                                    By {eventData.confirmedIdea.author.firstName} {eventData.confirmedIdea.author.lastName}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-card-foreground">
+                                    {eventData.confirmedIdea.description}
+                                </p>
+                            </CardContent>
+                        </Card>
                     )}
+                </div>
+            ) : (
+                <div className="flex overflow-y-auto px-4 md:px-10 custom-scrollbar">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {sortedIdeas.length > 0 ? (
+                            sortedIdeas.map((idea) => (
+                                <Card
+                                    key={idea.id}
+                                    onClick={() => setSelectedIdeaId(idea.id)}
+                                    className="hover:shadow-lg transition-shadow duration-300 bg-card text-card-foreground"
+                                >
+                                    <CardHeader>
+                                        <CardTitle className="truncate text-lg leading-tight">
+                                            {idea.title}
+                                        </CardTitle>
+                                        <CardDescription className="truncate text-card-foreground">
+                                            By {idea.author.firstName} {idea.author.lastName}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="text-sm text-card-foreground line-clamp-3">
+                                            {idea.description}
+                                        </p>
+                                    </CardContent>
+                                    <CardFooter>
+                                        <VoteButtons
+                                            ideaId={idea.id}
+                                            likes={idea.likes}
+                                            dislikes={idea.dislikes}
+                                            userVote={idea.userVote}
+                                            handleVote={handleVote}
+                                        />
+                                    </CardFooter>
+                                </Card>
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center">
+                                <p className="text-lg text-gray-500">No ideas yet. Be the first to add one!</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
 
+            {selectedIdeaId && (() => {
+                const idea = ideas.find((i) => i.id === selectedIdeaId);
+                if (!idea) return null; // Handle case where idea might not be found
 
-                    <Dialog open={selectedIdea !== null} onOpenChange={() => setSelectedIdea(null)}>
+                return (
+                    <Dialog open={true} onOpenChange={() => setSelectedIdeaId(null)}>
                         <DialogContent className="w-80 md:w-full">
                             <DialogHeader>
-                                <DialogTitle>{selectedIdea?.title}</DialogTitle>
-                                <DialogDescription>
-                                    By {selectedIdea?.author.firstName} {selectedIdea?.author.lastName}
+                                <DialogTitle className="truncate text-lg font-semibold">
+                                    {idea.title}
+                                </DialogTitle>
+                                <DialogDescription className="truncate text-sm text-gray-500">
+                                    By {idea.author.firstName} {idea.author.lastName}
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="my-4">
-                                {selectedIdea?.description}
+                                <p className="text-sm text-card-foreground">{idea.description}</p>
                             </div>
+                            {/* Upvote and Downvote Buttons in Dialog */}
+                            <VoteButtons
+                                ideaId={idea.id}
+                                likes={idea.likes}
+                                dislikes={idea.dislikes}
+                                userVote={idea.userVote}
+                                handleVote={handleVote}
+                            />
                             <DialogFooter>
-                                <Button>Confirm this idea!</Button>
+                                {isEventAuthor && (
+                                    <Button onClick={handleConfirmIdea}>Confirm this idea!</Button>
+                                )}
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
+                );
+            })()}
 
 
 
-                </div>
-            </div>
         </div>
     );
 };

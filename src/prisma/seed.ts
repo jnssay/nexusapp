@@ -25,7 +25,7 @@ export async function seedDatabase() {
             name: 'Sunday Book Club',
             description: "Let's get together to read books together!",
             chatId: '123456789',
-            status: 'CONFIRMED',
+            status: 'PENDING',
             author: {
                 connect: { id: user.id }
             },

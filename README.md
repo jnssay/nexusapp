@@ -4,6 +4,9 @@
 - voting color persists after removing the vote, and only disappears after interacting with other elements
 - idea confirmation, also add in the idea id that has been confirmed
 - dynamic event id access from telegram - how to fix?
+- height differences due to border when voting and not voting
+- default dialog opened has border around first vote button (autohighlighted element)
+- confirmation api 404 error right now
 
 
 <br>
