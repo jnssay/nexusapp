@@ -82,7 +82,7 @@ const IdeaBoard: React.FC = () => {
     return (
         <div className="flex flex-col h-screen mx-auto p-6 md:p-10">
             {/* Header */}
-            <header className="bg-secondary shadow md:mx-10 mb-4 md:mb-10 ">
+            <header className="bg-secondary items-center justify-center flex shadow md:mx-10 mb-4 md:mb-10 ">
                 <div className="w-72 md:w-full px-10 py-6 flex justify-center md:justify-between items-center">
                     <div className="flex flex-col items-center md:items-start">
                         {/* <h1 className="truncate text-3xl font-bold text-foreground">{event.name}</h1>
@@ -90,7 +90,7 @@ const IdeaBoard: React.FC = () => {
                         <h1 className="truncate max-w-60 md:max-w-96 text-xl font-bold text-foreground">EventEventEventEventEventEventEventEventEventEventntEventEveEventEventEventEventEventntEventEveEventEventEventEventEventntEventEventEventEventEventEventEventEventEventntEventEventEventEventEventEventEventEventEvent </h1>
                         <h2 className="text-md text-foreground">by Janessa</h2>
                     </div>
-                    <div className="flex items-center md:gap-4 hidden md:flex ml-10">
+                    <div className="flex items-center md:gap-4 hidden md:flex md:ml-10">
                         <Link href={`/newIdea`}>
 
                             <Button className="bg-primary text-primary-foreground flex items-center">
@@ -105,9 +105,11 @@ const IdeaBoard: React.FC = () => {
 
             {/* Mobile New Idea Button */}
             <div className="flex items-center justify-end md:hidden mb-6">
-                <Button className="bg-primary text-primary-foreground flex items-center">
-                    <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
-                </Button>
+                <Link href={`/newIdea`}>
+                    <Button className="bg-primary text-primary-foreground flex items-center">
+                        <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
+                    </Button>
+                </Link>
             </div>
 
             {/* Scrollable Cards Container */}

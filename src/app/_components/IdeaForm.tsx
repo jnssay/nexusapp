@@ -33,7 +33,6 @@ export default function IdeaForm() {
         defaultValues: {
             eventName: "",
             description: "",
-            attendees: 1,
         },
     })
 
