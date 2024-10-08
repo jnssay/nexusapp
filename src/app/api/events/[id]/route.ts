@@ -21,8 +21,6 @@ function bigIntToString(obj: any): any {
     return newObj;
 }
 
-// Get event by id
-// GET /api/events/:id
 export async function GET(
     request: Request,
     { params }: { params: { id: string } }
@@ -34,7 +32,7 @@ export async function GET(
             },
             include: {
                 author: true,
-                ideas: {
+                Idea: {
                     include: {
                         author: true,
                     },
@@ -46,7 +44,6 @@ export async function GET(
             return NextResponse.json({ error: 'Event not found' }, { status: 404 });
         }
 
-        // Convert BigInt values to strings
         const eventSerialized = bigIntToString(event);
 
         return NextResponse.json(eventSerialized);

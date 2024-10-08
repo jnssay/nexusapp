@@ -21,14 +21,13 @@ function bigIntToString(obj: any): any {
     return newObj;
 }
 
-// Get idea by id
-// GET /api/ideas/:id
 /**
  * Fetches an idea by its ID.
  * 
  * @param {Request} request - The incoming request object.
  * @returns {Promise<Response>} - A promise that resolves to the response object containing the idea data or an error message.
  */
+
 export async function GET(request: Request, { params }: { params: { id: string } }) {
 
     try {
@@ -61,12 +60,14 @@ interface IdeaRequestBody {
 
 // Create Idea with Idea name and Idea Description based on Event Id
 // POST /
+
 /**
  * Creates a new idea with the provided title, description, event ID, and user ID.
  * 
  * @param {Request} request - The incoming request object containing the idea data in JSON format.
  * @returns {Promise<Response>} - A promise that resolves to the response object containing the newly created idea data or an error message.
  */
+
 export async function POST(request: Request) {
     const { title, description, eventId, userId }: IdeaRequestBody = await request.json();
 

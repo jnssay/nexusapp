@@ -4,7 +4,6 @@
 - landing page frontend 
     - framer
 - telegram integration:
-    - pull telegram init data
     - pull event id from the specific bot command
 - api routes:
     - create idea within event
@@ -12,8 +11,6 @@
 - event idea board page:
     - implement upvote and downvote api
     - sort by upvotes?
-
-currently: event id is HARDCODED in IdeaBoard.tsx line 45 (to be pulled from supabase)
 
 
 <br>
@@ -131,24 +128,32 @@ Modify the schema in ```schema.prisma```:
 If you made changes to your schema that affect the database schema, run npx prisma migrate dev to create and apply a new migration. This also regenerates the Prisma Client to ensure it reflects the latest schema changes.  
   
 ```
-npx prisma migrate dev
+npx prisma migrate dev              # generates and populates to production db
 ```
 
 <strong>Note: may take up to 5 minutes for migrations to apply</strong>
 
-<be>
 
-### Database Migration
-**Editing from the schema instead of supabase and pushing to main**
+### Pulling the schema from Supabase:
+You can directly edit the tables from Supabase, to utilise their GUI. 
+
+To sync up your Supabase changes with your Prisma schema, run the following command:
+
 ```
-npx prisma migrate dev # this generate and populate to production DB
+npx prisma db pull                  # analyses the database and writes its schema in
 ```
 
+### Help! I am getting ERROR: function uuid_generate_v4() does not exist:
+- Locate your most recent migration file  
 
-**Editing from Supabase**
-```
-npx prisma db pull
-```
+- To the top of the file, add the SQL command: `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`  
+
+- Run migration again  
+
+
+
+
+<br>
 
 
 

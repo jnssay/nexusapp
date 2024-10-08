@@ -15,7 +15,6 @@ const TelegramScript: React.FC<TelegramScriptProps> = ({ onInitData }) => {
 
       // Retrieve init data
       const initData = window.Telegram.WebApp.initData;
-      console.log("Telegram Init Data:", initData);
 
       // Call the callback with the init data
       onInitData(initData);

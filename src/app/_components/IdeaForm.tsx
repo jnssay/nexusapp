@@ -33,13 +33,12 @@ export default function IdeaForm() {
         defaultValues: {
             eventName: "",
             description: "",
-            attendees: 1,
         },
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
-        // Here you would typically send the form data to your backend
+        // Send the form data to backend
         alert("Form submitted successfully!")
     }
 

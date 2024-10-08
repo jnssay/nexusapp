@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { GridIcon, ListBulletIcon } from '@radix-ui/react-icons';
 import { cn } from '~/lib/utils';
 
-// Define layout options
 const layoutOptions = [
     {
         name: 'Compact',
@@ -43,8 +42,8 @@ export function LayoutToggler({ layout, setLayout }: LayoutTogglerProps) {
                     key={option.name}
                     onClick={() => setLayout(option)}
                     className={`px-3 py-1 rounded-md text-sm font-medium focus:outline-none ${layout.name === option.name
-                            ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                            : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                        : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
                 >
                     {option.name}

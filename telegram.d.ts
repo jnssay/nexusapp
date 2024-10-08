@@ -1,4 +1,3 @@
-// telegram.d.ts
 export { };
 
 declare global {
