@@ -4,7 +4,18 @@ const prisma = new PrismaClient();
 
 async function cleanup() {
     try {
-        // Delete events related to a specific user by telegramId (or you can use user ID)
+        // Delete ideas created by the user
+        const deletedIdeas = await prisma.idea.deleteMany({
+            where: {
+                author: {
+                    telegramId: BigInt('987654321') // Replace with the actual Telegram ID of the user
+                }
+            }
+        });
+
+        console.log(`Deleted ${deletedIdeas.count} ideas`);
+
+        // Delete events related to the user
         const deletedEvents = await prisma.event.deleteMany({
             where: {
                 author: {

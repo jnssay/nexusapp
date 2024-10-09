@@ -10,7 +10,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await fetch(`/api/events/${params.id}`); // Using params.id directly
+        const response = await fetch(`/api/events/${params.id}`);
         const data = await response.json();
         setEvent(data);
         setLoading(false);
@@ -21,7 +21,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
     };
 
     fetchEvent();
-  }, [params.id]); // React to changes in the dynamic id
+  }, [params.id]);
 
   if (loading) {
     return <div>Loading event details...</div>;
