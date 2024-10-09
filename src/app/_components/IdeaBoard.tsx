@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "~/components/ui/button"
+import { useInitData } from '~/telegram/InitDataContext';
 import {
     Card,
     CardContent,
@@ -8,6 +9,15 @@ import {
     CardTitle,
     CardFooter,
 } from '~/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from '~/components/ui/dialog';
+
 import { TbThumbUpFilled, TbThumbDownFilled, TbCirclePlus } from 'react-icons/tb';
 import { ThemeToggler } from './ThemeToggler';
 import Link from 'next/link';
@@ -24,7 +34,7 @@ interface Idea {
     description?: string;
     likes: number;
     dislikes: number;
-    userVote: 'like' | 'dislike' | null;
+    userVote: 'LIKE' | 'DISLIKE' | null;
 }
 
 interface Event {
@@ -45,14 +55,53 @@ interface IdeaBoardProps {
 }
 
 const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
+    const { user } = useInitData();
     const [ideas, setIdeas] = useState<Idea[]>(event.Idea);
+    const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
 
-    const handleUpvote = async (id: string): Promise<void> => {
-        // Implement upvote logic
-    };
+    const sortedIdeas = [...ideas].sort((a, b) => b.likes - a.likes);
 
-    const handleDownvote = async (id: string): Promise<void> => {
-        // Implement downvote logic
+    const handleVote = async (ideaId: string, voteType: 'LIKE' | 'DISLIKE') => {
+        try {
+            const idea = ideas.find((i) => i.id === ideaId);
+            if (!idea) return;
+
+            let newVoteType: 'LIKE' | 'DISLIKE' | null;
+            if (idea.userVote === voteType) {
+                newVoteType = null;
+            } else {
+                newVoteType = voteType;
+            }
+
+            const userId = user?.id;
+
+            if (!userId) {
+                // Handle the case where userId is not available
+                console.error('User is not logged in');
+                return;
+            }
+
+            // Send the vote to the backend, including userId
+            const response = await fetch(`/api/idea/${ideaId}/vote`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ voteType: newVoteType, userId }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to vote');
+            }
+
+            const updatedIdea = await response.json();
+
+            // Update the ideas state
+            setIdeas((prevIdeas) =>
+                prevIdeas.map((i) => (i.id === ideaId ? updatedIdea : i))
+            );
+        } catch (error) {
+            console.error(error);
+            // Handle error (e.g., show a notification)
+        }
     };
 
     return (
@@ -89,10 +138,11 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
             {/* Scrollable Cards Container */}
             <div className="flex overflow-y-auto px-4 md:px-10 custom-scrollbar">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {ideas.length > 0 ? (
-                        ideas.map((idea) => (
+                    {sortedIdeas.length > 0 ? (
+                        sortedIdeas.map((idea) => (
                             <Card
                                 key={idea.id}
+                                onClick={() => setSelectedIdea(idea)}
                                 className="hover:shadow-lg transition-shadow duration-300 bg-card text-card-foreground"
                             >
                                 <CardHeader>
@@ -111,9 +161,12 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                                 <CardFooter>
                                     <div className="flex items-center justify-between w-full">
                                         <button
-                                            onClick={() => handleUpvote(idea.id)}
-                                            className={`flex items-center ${idea.userVote === 'like'
-                                                ? 'text-green-600'
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleVote(idea.id, 'LIKE');
+                                            }}
+                                            className={`flex items-center px-2 py-1 rounded ${idea.userVote === 'LIKE'
+                                                ? 'border border-green-600 text-green-600'
                                                 : 'text-gray-500 hover:text-green-600'
                                                 }`}
                                             aria-label="Upvote Idea"
@@ -121,10 +174,15 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                                             <TbThumbUpFilled className="mr-1" />
                                             {idea.likes}
                                         </button>
+
+                                        {/* Downvote Button */}
                                         <button
-                                            onClick={() => handleDownvote(idea.id)}
-                                            className={`flex items-center ${idea.userVote === 'dislike'
-                                                ? 'text-red-600'
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleVote(idea.id, 'DISLIKE');
+                                            }}
+                                            className={`flex items-center px-2 py-1 rounded ${idea.userVote === 'DISLIKE'
+                                                ? 'border border-red-600 text-red-600'
                                                 : 'text-gray-500 hover:text-red-600'
                                                 }`}
                                             aria-label="Downvote Idea"
@@ -132,6 +190,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                                             <TbThumbDownFilled className="mr-1" />
                                             {idea.dislikes}
                                         </button>
+
                                     </div>
                                 </CardFooter>
                             </Card>
@@ -141,6 +200,24 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                             <p className="text-lg text-gray-500">No ideas yet. Be the first to add one!</p>
                         </div>
                     )}
+
+
+                    <Dialog open={selectedIdea !== null} onOpenChange={() => setSelectedIdea(null)}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>{selectedIdea?.title}</DialogTitle>
+                                <DialogDescription>
+                                    By {selectedIdea?.author.firstName} {selectedIdea?.author.lastName}
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="my-4">
+                                {selectedIdea?.description}
+                            </div>
+                            <DialogFooter>
+                                <Button>Confirm this idea!</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
 
 
 

@@ -2,8 +2,11 @@
 
 import { useEffect, useState } from "react";
 import IdeaBoard from "~/app/_components/IdeaBoard";
+import DisplayInitData from "~/telegram/DisplayInitData";
+import { useInitData } from '~/telegram/InitDataContext'; // Import useInitData
 
 export default function EventPage() {
+  const { user } = useInitData(); // Get the user
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [eventId, setEventId] = useState<string | null>(null);
@@ -28,12 +31,13 @@ export default function EventPage() {
     fetchEventId();
   }, []);
 
-  // Fetch the event data based on eventId
+  // Fetch the event data based on eventId and userId
   useEffect(() => {
-    if (eventId) {
+    if (eventId && user) { // Wait until both eventId and user are available
       const fetchEvent = async () => {
         try {
-          const response = await fetch(`/api/events/${eventId}`);
+          // Include the userId as a query parameter
+          const response = await fetch(`/api/events/${eventId}?userId=${user.id}`);
 
           if (!response.ok) {
             throw new Error(`Failed to fetch event: ${response.status}`);
@@ -50,10 +54,10 @@ export default function EventPage() {
 
       fetchEvent();
     }
-  }, [eventId]);
+  }, [eventId, user]); // Run effect when eventId or user changes
 
   if (loading) {
-    return <div>Loading event details...</div>;
+    return <div className="flex mt-10 w-full items-center justify-center">Loading event details...</div>;
   }
 
   if (!event) {
@@ -61,8 +65,9 @@ export default function EventPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="flex min-h-screen bg-gradient-to-tl from-primary flex-col">
       <IdeaBoard event={event} />
+      <DisplayInitData />
     </main>
   );
 }

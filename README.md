@@ -1,16 +1,9 @@
 # NexusMeet
 
 ## TO-DO:
-- landing page frontend 
-    - framer
-- telegram integration:
-    - pull event id from the specific bot command
-- api routes:
-    - create idea within event
-    - create event
-- event idea board page:
-    - implement upvote and downvote api
-    - sort by upvotes?
+- upvote downvote frontend display bugs
+- when two people upvote at the same time, counter ticks to show final count (+2 for second user)
+- color stays after removing the vote
 
 
 <br>
@@ -150,6 +143,14 @@ npx prisma db pull                  # analyses the database and writes its schem
 
 - Run migration again  
 
+### Seeding:
+```
+npx prisma db seed                  # seeds data into the database
+```
+
+```
+npx tsx src/prisma/cleanup.ts       # removes all seeded data from database
+```
 
 
 

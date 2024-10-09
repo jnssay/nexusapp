@@ -17,6 +17,7 @@ import {
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { useInitData } from "~/telegram/InitDataContext";
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 // Validation schema
 const formSchema = z.object({
@@ -44,6 +45,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
 
     // Use the custom hook to get the user data
     const { user } = useInitData();
+    const router = useRouter(); // Initialize router
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         if (!user) {
@@ -72,7 +74,8 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
 
             const data = await response.json();
             console.log('Idea created successfully:', data);
-            alert('Idea created successfully!');
+            // Redirect to the event page
+            router.push(`/event/${eventId}`);
         } catch (error) {
             console.error('Error submitting form:', error);
             alert('Failed to create idea.');
