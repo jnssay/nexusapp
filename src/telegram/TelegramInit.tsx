@@ -14,6 +14,7 @@ const TelegramInit: React.FC = () => {
                 window.Telegram.WebApp.ready();
 
                 const initData = window.Telegram.WebApp.initData;
+                console.log("********************", initData)
                 const parsedData = parseInitData(initData);
 
                 const user = await checkOrCreateUser(parsedData);

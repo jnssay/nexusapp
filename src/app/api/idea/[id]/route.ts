@@ -35,7 +35,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             where: { id: params.id },
             include: {
                 author: true,
-                event: true,
+                Event: true,
                 userVotes: true,
             },
         });

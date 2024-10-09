@@ -10,7 +10,7 @@ export default async function Home() {
     <HydrateClient>
       <main className="flex min-h-screen flex-col items-center justify-center gap-2">
         event page with ideas is at:
-        <Link href={`/eventId`} className="mb-10"><Button>/eventId</Button></Link>
+        <Link href={`/example`} className="mb-10"><Button>/example</Button></Link>
         idea creation form page is at:
         <Link href={`/newIdea`}><Button>/newIdea</Button></Link>
         <DisplayInitData />
