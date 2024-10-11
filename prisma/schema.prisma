@@ -1,13 +1,14 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
-  extensions = [hstore(schema: "myHstoreSchema"), pg_trgm, postgis(version: "2.1"), uuid_ossp]
+  extensions      = ["(function)", "pg_trgm", "(function)", "uuid_ossp"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp", schema: "extensions")]
 }
 
 model Idea {
@@ -17,11 +18,10 @@ model Idea {
   likes       Int        @default(0)
   event_id    String?    @db.Uuid
   id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  Event       Event?     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userVotes   UserVote[]
-
   userId      String?    @db.Uuid
+  Event       Event?     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   author      User?      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userVotes   UserVote[]
 }
 
 model User {
@@ -32,8 +32,8 @@ model User {
   id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   events     Event[]
   EventRSVPs EventRSVPs[]
-  userVotes  UserVote[]
   ideas      Idea[]
+  userVotes  UserVote[]
 }
 
 model UserVote {
@@ -49,22 +49,24 @@ model Event {
   name        String
   description String?
   chatId      String       @default("")
+  status      EventStatus
   id          String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId      String?      @db.Uuid
-  status      EventStatus
+  messageId   String?
   author      User?        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   EventRSVPs  EventRSVPs[]
   Idea        Idea[]
 }
 
 model EventRSVPs {
-  id      String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  eventId String     @db.Uuid
-  userId  String     @db.Uuid
-  chatId  String
-  status  RSVPStatus
-  Event   Event      @relation(fields: [eventId], references: [id])
-  User    User       @relation(fields: [userId], references: [id])
+  id        String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  eventId   String     @db.Uuid
+  userId    String     @db.Uuid
+  chatId    String
+  status    RSVPStatus
+  messageId String?
+  Event     Event      @relation(fields: [eventId], references: [id])
+  User      User       @relation(fields: [userId], references: [id])
 }
 
 enum VoteType {
