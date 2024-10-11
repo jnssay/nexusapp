@@ -68,20 +68,49 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
             let newVoteType: 'LIKE' | 'DISLIKE' | null;
             if (idea.userVote === voteType) {
+                // User is removing their vote
                 newVoteType = null;
             } else {
+                // User is casting a new vote or switching vote
                 newVoteType = voteType;
             }
 
             const userId = user?.id;
 
             if (!userId) {
-                // Handle the case where userId is not available
                 console.error('User is not logged in');
                 return;
             }
 
-            // Send the vote to the backend, including userId
+            // Optimistically update the state based on the user's action
+            setIdeas((prevIdeas) =>
+                prevIdeas.map((i) => {
+                    if (i.id === ideaId) {
+                        let likes = i.likes;
+                        let dislikes = i.dislikes;
+                        const previousVote = i.userVote;
+
+                        // Remove previous vote
+                        if (previousVote === 'LIKE') {
+                            likes -= 1;
+                        } else if (previousVote === 'DISLIKE') {
+                            dislikes -= 1;
+                        }
+
+                        // Add new vote
+                        if (newVoteType === 'LIKE') {
+                            likes += 1;
+                        } else if (newVoteType === 'DISLIKE') {
+                            dislikes += 1;
+                        }
+
+                        return { ...i, likes, dislikes, userVote: newVoteType };
+                    }
+                    return i;
+                })
+            );
+
+            // Send the vote to the backend
             const response = await fetch(`/api/idea/${ideaId}/vote`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -92,17 +121,14 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                 throw new Error('Failed to vote');
             }
 
-            const updatedIdea = await response.json();
-
-            // Update the ideas state
-            setIdeas((prevIdeas) =>
-                prevIdeas.map((i) => (i.id === ideaId ? updatedIdea : i))
-            );
+            // Optionally handle the server response if needed
+            // Since we don't want to include other users' votes, we ignore the server's updated counts
         } catch (error) {
             console.error(error);
-            // Handle error (e.g., show a notification)
+            // Optionally revert the optimistic update or show an error
         }
     };
+
 
     return (
         <div className="flex flex-col h-screen mx-auto p-6 md:p-10">
@@ -203,7 +229,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
 
                     <Dialog open={selectedIdea !== null} onOpenChange={() => setSelectedIdea(null)}>
-                        <DialogContent>
+                        <DialogContent className="w-80 md:w-full">
                             <DialogHeader>
                                 <DialogTitle>{selectedIdea?.title}</DialogTitle>
                                 <DialogDescription>

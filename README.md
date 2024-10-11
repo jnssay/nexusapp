@@ -1,9 +1,9 @@
 # NexusMeet
 
 ## TO-DO:
-- upvote downvote frontend display bugs
-- when two people upvote at the same time, counter ticks to show final count (+2 for second user)
-- color stays after removing the vote
+- voting color persists after removing the vote, and only disappears after interacting with other elements
+- idea confirmation, also add in the idea id that has been confirmed
+- dynamic event id access from telegram - how to fix?
 
 
 <br>
