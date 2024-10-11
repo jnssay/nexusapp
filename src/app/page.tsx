@@ -2,9 +2,12 @@ import { HydrateClient } from "~/trpc/server";
 import Link from 'next/link';
 import { Button } from "~/components/ui/button";
 import DisplayInitData from "~/telegram/DisplayInitData";
+import { redirect } from 'next/navigation';
 
-
-export default async function Home() {
+export default function Home({ searchParams }: { searchParams: { event?: string } }) {
+  if (searchParams?.event) {
+    redirect(`/event/${searchParams.event}`);
+  }
 
   return (
     <HydrateClient>
