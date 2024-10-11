@@ -11,30 +11,34 @@ datasource db {
 }
 
 model Idea {
-  id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   title       String
   description String?
   dislikes    Int        @default(0)
   likes       Int        @default(0)
   event_id    String?    @db.Uuid
+  id          String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   Event       Event?     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userVotes   UserVote[]
+
+  userId      String?    @db.Uuid
+  author      User?      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model User {
-  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   telegramId BigInt       @unique
   firstName  String
   lastName   String?
   username   String?
+  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   events     Event[]
-  userVotes  UserVote[]
   EventRSVPs EventRSVPs[]
+  userVotes  UserVote[]
+  ideas      Idea[]
 }
 
 model UserVote {
-  id     String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   type   VoteType
+  id     String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId String?  @db.Uuid
   ideaId String?  @db.Uuid
   idea   Idea?    @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -42,27 +46,25 @@ model UserVote {
 }
 
 model Event {
-  id          String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name        String
   description String?
   chatId      String       @default("")
+  id          String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId      String?      @db.Uuid
-  author      User?        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Idea        Idea[]
-  EventRSVPs  EventRSVPs[]
   status      EventStatus
+  author      User?        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  EventRSVPs  EventRSVPs[]
+  Idea        Idea[]
 }
 
 model EventRSVPs {
-  id      String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  eventId String @db.Uuid
-  userId  String @db.Uuid
+  id      String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  eventId String     @db.Uuid
+  userId  String     @db.Uuid
   chatId  String
-
-  status RSVPStatus
-
-  event Event @relation(fields: [eventId], references: [id])
-  user  User  @relation(fields: [userId], references: [id])
+  status  RSVPStatus
+  Event   Event      @relation(fields: [eventId], references: [id])
+  User    User       @relation(fields: [userId], references: [id])
 }
 
 enum VoteType {

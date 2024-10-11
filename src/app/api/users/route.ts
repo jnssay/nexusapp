@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '~/lib/prisma';
 
-// Utility function to convert BigInt to string
 function bigIntToString(obj: any): any {
     if (typeof obj !== 'object' || obj === null) return obj;
     if (Array.isArray(obj)) return obj.map(bigIntToString);
@@ -20,8 +19,6 @@ function bigIntToString(obj: any): any {
     return newObj;
 }
 
-// Create or check user
-// POST /api/users
 export async function POST(request: Request) {
     try {
         // Parse the request body as JSON
@@ -52,7 +49,6 @@ export async function POST(request: Request) {
             });
         }
 
-        // Convert BigInt values to strings
         const userSerialized = bigIntToString(user);
 
         return NextResponse.json(userSerialized);

@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useInitData } from '~/telegram/InitDataContext'; // Adjust path as necessary
+import { useInitData } from '~/telegram/InitDataContext';
 
 const DisplayInitData: React.FC = () => {
     const { initData } = useInitData(); // Access context

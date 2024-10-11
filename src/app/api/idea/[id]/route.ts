@@ -1,57 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '~/lib/prisma';
+import { bigIntToString } from '~/lib/bigIntToString';
 
-
-// Utility function to convert BigInt to string
-function bigIntToString(obj: any): any {
-    if (typeof obj !== 'object' || obj === null) return obj;
-    if (Array.isArray(obj)) return obj.map(bigIntToString);
-
-    const newObj: any = {};
-    for (const key in obj) {
-        const value = obj[key];
-        if (typeof value === 'bigint') {
-            newObj[key] = value.toString();
-        } else if (typeof value === 'object') {
-            newObj[key] = bigIntToString(value);
-        } else {
-            newObj[key] = value;
-        }
-    }
-    return newObj;
-}
-
-// Get idea by id
-// GET /api/ideas/:id
 /**
- * Fetches an idea by its ID.
- * 
- * @param {Request} request - The incoming request object.
- * @returns {Promise<Response>} - A promise that resolves to the response object containing the idea data or an error message.
+ * Interface representing the expected structure of the incoming request body for creating a new idea.
  */
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-
-    try {
-        const idea = await prisma.idea.findUnique({
-            where: { id: params.id },
-            include: {
-                author: true,
-                event: true,
-                userVotes: true,
-            },
-        });
-
-        if (!idea) {
-            return NextResponse.json({ error: 'Idea not found' }, { status: 404 });
-        }
-
-        return NextResponse.json(bigIntToString(idea));
-    } catch (error) {
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-    }
-}
-
-
 interface IdeaRequestBody {
     title: string;
     description: string;
@@ -59,29 +12,32 @@ interface IdeaRequestBody {
     userId: string;
 }
 
-// Create Idea with Idea name and Idea Description based on Event Id
-// POST /
 /**
  * Creates a new idea with the provided title, description, event ID, and user ID.
- * 
- * @param {Request} request - The incoming request object containing the idea data in JSON format.
- * @returns {Promise<Response>} - A promise that resolves to the response object containing the newly created idea data or an error message.
  */
-export async function POST(request: Request) {
-    const { title, description, eventId, userId }: IdeaRequestBody = await request.json();
+export async function POST(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+    const { title, description, userId } = (await request.json()) as IdeaRequestBody;
 
     try {
+        // Create the new idea associated with the eventId from params
         const newIdea = await prisma.idea.create({
             data: {
                 title,
                 description,
-                eventId,
+                event_id: params.id, // Use the event ID from the URL params
                 userId,
             },
         });
 
-        return NextResponse.json(bigIntToString(newIdea), { status: 201 });
+        // Convert BigInts to strings in the newIdea object
+        const ideaData = bigIntToString(newIdea);
+
+        return NextResponse.json(ideaData, { status: 201 });
     } catch (error) {
+        console.error('Error creating idea:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

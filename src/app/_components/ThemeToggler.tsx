@@ -1,10 +1,9 @@
 "use client"
 
-// ThemeToggler.tsx
 import { useState, useEffect } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { FaCircle } from "react-icons/fa";
-import { cn } from '~/lib/utils'; // Adjust the path according to your project structure
+import { cn } from '~/lib/utils';
 
 const themes = [
     { name: 'Default', value: 'default' },
