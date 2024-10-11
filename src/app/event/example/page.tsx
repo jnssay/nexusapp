@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import IdeaBoard from "~/app/_components/IdeaBoard";
 import DisplayInitData from "~/telegram/DisplayInitData";
-import { useInitData } from '~/telegram/InitDataContext'; // Import useInitData
+import { useInitData } from '~/telegram/InitDataContext';
 
 export default function EventPage() {
   const { user } = useInitData(); // Get the user
@@ -63,6 +63,11 @@ export default function EventPage() {
   if (!event) {
     return <div>No event found.</div>;
   }
+
+  if (!user) {
+    return <div>No user found.</div>;
+  }
+
 
   return (
     <main className="flex min-h-screen bg-gradient-to-tl from-primary flex-col">
