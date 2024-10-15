@@ -13,7 +13,7 @@ export async function GET(
     const userId = searchParams.get('userId');
 
     try {
-        // Fetch the event, including ideas and user votes for the specified user
+        // Fetch the event, including ideas, user votes for the specified user, and the confirmed idea
         const event = await prisma.event.findUnique({
             where: { id: eventId },
             include: {
@@ -28,6 +28,12 @@ export async function GET(
                         },
                     },
                 },
+                // Include event status and confirmed idea details
+                Idea_Event_confirmedIdeaIdToIdea: {  // Fetch the confirmed idea relation
+                    include: {
+                        author: true, // Include the author details of the confirmed idea
+                    },
+                },
             },
         });
 
@@ -40,6 +46,8 @@ export async function GET(
             id: event.id,
             name: event.name,
             description: event.description,
+            status: event.status, // Include the event status
+            confirmedIdea: event.Idea_Event_confirmedIdeaIdToIdea, // Include the full confirmed idea details
             author: event.author,
             Idea: event.Idea.map((idea) => {
                 // Determine the user's vote for this idea

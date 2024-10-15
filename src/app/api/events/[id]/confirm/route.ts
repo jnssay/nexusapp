@@ -3,8 +3,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import prisma from '~/lib/prisma';
+import { bigIntToString } from '~/lib/bigIntToString';
 
-export async function POST(req: NextRequest, { params }: { params: { eventId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         const { ideaId } = await req.json();
 
@@ -23,15 +24,15 @@ export async function POST(req: NextRequest, { params }: { params: { eventId: st
             return NextResponse.json({ error: 'Idea not found.' }, { status: 404 });
         }
 
-        if (idea.event_id !== params.eventId) {
+        if (idea.event_id !== params.id) {
             return NextResponse.json({ error: 'Idea does not belong to the specified event.' }, { status: 400 });
         }
 
         // Update the event's status and set the confirmedIdeaId
         const updatedEvent = await prisma.event.update({
-            where: { id: params.eventId },
+            where: { id: params.id },
             data: {
-                status: 'COMPLETED',
+                status: 'CONFIRMED',
                 confirmedIdeaId: ideaId,
             },
             include: {
@@ -43,7 +44,9 @@ export async function POST(req: NextRequest, { params }: { params: { eventId: st
             },
         });
 
-        return NextResponse.json(updatedEvent, { status: 200 });
+        const sanitizedEvent = bigIntToString(updatedEvent);
+
+        return NextResponse.json(sanitizedEvent, { status: 200 });
     } catch (error) {
         console.error('Error confirming idea:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

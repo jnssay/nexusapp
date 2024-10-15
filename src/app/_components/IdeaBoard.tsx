@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from "~/components/ui/button"
+import { Button } from "~/components/ui/button";
 import { useInitData } from '~/telegram/InitDataContext';
 import {
     Card,
@@ -17,8 +17,7 @@ import {
     DialogDescription,
     DialogFooter,
 } from '~/components/ui/dialog';
-
-import { TbThumbUpFilled, TbThumbDownFilled, TbCirclePlus } from 'react-icons/tb';
+import { TbCirclePlus } from 'react-icons/tb';
 import { ThemeToggler } from './ThemeToggler';
 import Link from 'next/link';
 import VoteButtons from '~/app/_components/VoteButtons';
@@ -54,29 +53,29 @@ interface Event {
     confirmedIdea?: Idea;
 }
 
-
 interface IdeaBoardProps {
     event: Event;
 }
 
 const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
     const { user } = useInitData();
-    const [ideas, setIdeas] = useState<Idea[]>(event.Idea);
+    const [ideas, setIdeas] = useState<Idea[]>([]);
     const [selectedIdeaId, setSelectedIdeaId] = useState<string | null>(null);
 
     const [eventData, setEventData] = useState<Event>(event);
 
     const isEventAuthor = user?.id === eventData.author?.id;
 
-
-
-    const sortedIdeas = [...ideas].sort((a, b) => b.likes - a.likes);
+    // Sort ideas only on page load
+    useEffect(() => {
+        const sortedIdeas = [...event.Idea].sort((a, b) => b.likes - a.likes);
+        setIdeas(sortedIdeas);
+    }, [event.Idea]);
 
     const handleConfirmIdea = async () => {
         if (!selectedIdeaId) return;
-
         try {
-            const response = await fetch(`/api/event/${eventData.id}/confirm`, {
+            const response = await fetch(`/api/events/${eventData.id}/confirm`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ideaId: selectedIdeaId }),
@@ -92,11 +91,9 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
             setSelectedIdeaId(null);
         } catch (error) {
             console.error(error);
-            // Optionally show an error notification to the user
             alert(`Error: ${(error as Error).message}`);
         }
     };
-
 
     const handleVote = async (ideaId: string, voteType: 'LIKE' | 'DISLIKE') => {
         try {
@@ -157,15 +154,14 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
             if (!response.ok) {
                 throw new Error('Failed to vote');
             }
-
-            // Optionally handle the server response if needed
-            // Since we don't want to include other users' votes, we ignore the server's updated counts
         } catch (error) {
             console.error(error);
-            // Optionally revert the optimistic update or show an error
         }
     };
 
+    console.log("eventData:", eventData)
+    console.log("eventData confirmed idea:", eventData.confirmedIdea)
+    console.log("eventData status:", eventData.status)
 
     return (
         <div className="flex flex-col h-screen mx-auto p-6 md:p-10">
@@ -177,16 +173,13 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                         <h2 className="text-md text-foreground">by {event.author.firstName}</h2>
                     </div>
                     <div className="flex items-center md:gap-4 hidden md:flex md:ml-10">
-                        {eventData.status !== 'COMPLETED' && (
+                        {eventData.status !== 'CONFIRMED' && (
                             <Link href={`/event/${event.id}/newidea`}>
                                 <Button className="bg-primary text-primary-foreground flex items-center">
                                     <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
                                 </Button>
                             </Link>
-
                         )}
-
-
                         <ThemeToggler />
                     </div>
                 </div>
@@ -194,7 +187,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
             {/* Mobile New Idea Button */}
             <div className="flex items-center justify-end md:hidden mb-6">
-                {eventData.status !== 'COMPLETED' && (
+                {eventData.status !== 'CONFIRMED' && (
                     <Link href={`/event/${event.id}/newidea`}>
                         <Button className="bg-primary text-primary-foreground flex items-center">
                             <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
@@ -204,12 +197,9 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
             </div>
 
             {/* Scrollable Cards Container */}
-
-
-            {eventData.status === 'COMPLETED' ? (
+            {eventData.status === 'CONFIRMED' ? (
                 <div>
-                    <h2 className="text-xl font-bold">Event Completed</h2>
-                    <p>The confirmed idea is:</p>
+                    <div className="mb-2 text-md ">Event Confirmed:</div>
                     {eventData.confirmedIdea && (
                         <Card className="bg-card text-card-foreground">
                             <CardHeader>
@@ -231,8 +221,8 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
             ) : (
                 <div className="flex overflow-y-auto px-4 md:px-10 custom-scrollbar">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {sortedIdeas.length > 0 ? (
-                            sortedIdeas.map((idea) => (
+                        {ideas.length > 0 ? (
+                            ideas.map((idea) => (
                                 <Card
                                     key={idea.id}
                                     onClick={() => setSelectedIdeaId(idea.id)}
@@ -273,7 +263,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
             {selectedIdeaId && (() => {
                 const idea = ideas.find((i) => i.id === selectedIdeaId);
-                if (!idea) return null; // Handle case where idea might not be found
+                if (!idea) return null;
 
                 return (
                     <Dialog open={true} onOpenChange={() => setSelectedIdeaId(null)}>
@@ -289,7 +279,6 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                             <div className="my-4">
                                 <p className="text-sm text-card-foreground">{idea.description}</p>
                             </div>
-                            {/* Upvote and Downvote Buttons in Dialog */}
                             <VoteButtons
                                 ideaId={idea.id}
                                 likes={idea.likes}
@@ -306,9 +295,6 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                     </Dialog>
                 );
             })()}
-
-
-
         </div>
     );
 };
