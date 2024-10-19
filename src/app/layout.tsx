@@ -4,6 +4,8 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { InitDataProvider } from '~/telegram/InitDataContext';
 import TelegramInit from '~/telegram/TelegramInit';
+import { Inter } from 'next/font/google'
+import { Gowun_Dodum } from 'next/font/google'
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -17,12 +19,20 @@ const quicksand = Quicksand({
   variable: '--font-quicksand',
 });
 
+const inter = Inter({ subsets: ['latin'] })
+
+const gowunDodum = Gowun_Dodum({
+  subsets: ['latin'],
+  weight: ['400'], // Specify weights you need, '400' is regular
+  variable: '--font-gowun-dodum',
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <InitDataProvider>
-      <html lang="en" className={quicksand.className}>
+      <html lang="en" className={gowunDodum.className}>
         <body>
           <TRPCReactProvider>
             {children}

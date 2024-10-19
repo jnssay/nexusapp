@@ -37,7 +37,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
                 }}
                 className={`flex items-center px-2 py-1 rounded border-box ${userVote === 'LIKE'
                     ? 'border border-green-600 text-green-600'
-                    : 'border border-transparent text-gray-500'
+                    : 'border border-transparent text-primary'
                     } ${!isTouchDevice ? 'hover:text-green-600' : ''}`} // Conditionally add hover class
                 aria-label="Upvote Idea"
                 style={{ boxSizing: 'border-box', minHeight: '36px', outline: 'none' }} // Ensure consistent height
@@ -53,7 +53,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
                 }}
                 className={`flex items-center px-2 py-1 rounded border-box ${userVote === 'DISLIKE'
                     ? 'border border-red-600 text-red-600'
-                    : 'border border-transparent text-gray-500'
+                    : 'border border-transparent text-primary'
                     } ${!isTouchDevice ? 'hover:text-red-600' : ''}`} // Conditionally add hover class
                 aria-label="Downvote Idea"
                 style={{ boxSizing: 'border-box', minHeight: '36px', outline: 'none' }} // Ensure consistent height

@@ -83,7 +83,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
     }
 
     return (
-        <div className="flex-col max-w-md mx-auto mt-10 md:mt-0 h-screen justify-center items-center md:flex">
+        <div className="flex-col max-w-md mx-auto mt-10 md:mt-0 h-screen justify-center items-center md:flex text-foreground">
             <h1 className="font-bold max-w-72 md:max-w-full text-xl mb-10">Create New Idea for {eventName}!</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -94,7 +94,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                             <FormItem>
                                 <FormLabel>Idea Name</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Amazing Idea" {...field} />
+                                    <Input className="bg-accent text-accent-foreground placeholder:text-accent-foreground" placeholder="Amazing Idea" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                     The name of your idea for the event.
@@ -112,7 +112,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                                 <FormControl>
                                     <Textarea
                                         placeholder="Tell us about your idea..."
-                                        className="resize-none h-48 w-72 md:w-96"
+                                        className="bg-accent text-accent-foreground placeholder:text-accent-foreground resize-none h-48 w-72 md:w-96"
                                         {...field}
                                     />
                                 </FormControl>
@@ -124,9 +124,9 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                         )}
                     />
                     <div className="justify-between flex">
-                        <Button type="submit">Submit</Button>
+                        <Button className="hover:bg-secondary hover:text-secondary-foreground" type="submit">Submit</Button>
                         <Link href={`/event/${eventId}`}>
-                            <Button variant="outline">Back</Button>
+                            <Button className="hover:bg-accent hover:text-accent-foreground" variant="outline">Back</Button>
                         </Link>
                     </div>
                 </form>

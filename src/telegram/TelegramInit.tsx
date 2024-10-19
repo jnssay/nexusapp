@@ -23,6 +23,11 @@ const TelegramInit: React.FC = () => {
                 setInitData(parsedData); // Save initData in context
                 setUser(user); // Save user in context
 
+                const themeParams = window.Telegram.WebApp.themeParams;
+                if (themeParams) {
+                    applyThemeColors(themeParams);
+                }
+
                 // Check for start_param and redirect if present
                 if (parsedData.start_param) {
                     const startParam = parsedData.start_param;
@@ -107,21 +112,101 @@ const checkOrCreateUser = async (telegramUserData: Record<string, any>) => {
     }
 };
 
-// Function to apply theme colors based on Telegram theme parameters
+// Utility function to convert hex to HSL
+const hexToHSL = (hex: string) => {
+    // Remove the hash if it exists
+    hex = hex.replace(/^#/, '');
+
+    // Parse the r, g, b values
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+
+    // Convert to a range of 0-1
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    // Find the maximum and minimum values to get luminance
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+
+    if (max !== min) {
+        let d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
+        h *= 60; // Convert to degrees
+    }
+
+    // Convert to percentages
+    s = Math.round(s * 100);
+    l = Math.round(l * 100);
+    h = Math.round(h); // Ensure h is always a number
+
+    return `${h} ${s}% ${l}%`;
+};
+
 const applyThemeColors = (themeParams: Record<string, any>) => {
     const root = document.documentElement;
+    console.log("Received theme parameters:", themeParams);
 
-    // Example of applying dynamic colors
+    // Use hexToHSL to convert hex colors to HSL before applying them
     if (themeParams.bg_color) {
-        root.style.setProperty("--background", themeParams.bg_color);
+        root.style.setProperty("--background", hexToHSL(themeParams.bg_color));
     }
     if (themeParams.text_color) {
-        root.style.setProperty("--foreground", themeParams.text_color);
+        root.style.setProperty("--foreground", hexToHSL(themeParams.text_color));
+    }
+    if (themeParams.hint_color) {
+        root.style.setProperty("--primary", hexToHSL(themeParams.hint_color));
+    }
+    if (themeParams.bottom_bar_bg_color) {
+        root.style.setProperty("--primary-foreground", hexToHSL(themeParams.bottom_bar_bg_color));
+    }
+    if (themeParams.button_color) {
+        root.style.setProperty("--secondary", hexToHSL(themeParams.button_color));
+    }
+    if (themeParams.button_text_color) {
+        root.style.setProperty("--secondary-foreground", hexToHSL(themeParams.button_text_color));
+    }
+    if (themeParams.secondary_bg_color) {
+        root.style.setProperty("--accent", hexToHSL(themeParams.secondary_bg_color));
+    }
+    if (themeParams.accent_text_color) {
+        root.style.setProperty("--accent-foreground", hexToHSL(themeParams.accent_text_color));
+    }
+    if (themeParams.destructive_text_color) {
+        root.style.setProperty("--destructive-foreground", hexToHSL(themeParams.destructive_text_color));
+    }
+    if (themeParams.section_bg_color) {
+        root.style.setProperty("--muted", hexToHSL(themeParams.section_bg_color));
+    }
+    if (themeParams.subtitle_text_color) {
+        root.style.setProperty("--muted-foreground", hexToHSL(themeParams.subtitle_text_color));
+    }
+    if (themeParams.section_header_text_color) {
+        root.style.setProperty("--popover", hexToHSL(themeParams.section_header_text_color));
+    }
+    if (themeParams.header_bg_color) {
+        root.style.setProperty("--popover-foreground", hexToHSL(themeParams.header_bg_color));
+    }
+    if (themeParams.section_separator_color) {
+        root.style.setProperty("--border", hexToHSL(themeParams.section_separator_color));
     }
     if (themeParams.link_color) {
-        root.style.setProperty("--primary", themeParams.link_color);
+        root.style.setProperty("--input", hexToHSL(themeParams.link_color));
     }
-    // Add more mappings as needed
 };
 
 

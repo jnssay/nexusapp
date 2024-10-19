@@ -18,7 +18,6 @@ import {
     DialogFooter,
 } from '~/components/ui/dialog';
 import { TbCirclePlus } from 'react-icons/tb';
-import { ThemeToggler } from './ThemeToggler';
 import Link from 'next/link';
 import VoteButtons from '~/app/_components/VoteButtons';
 
@@ -166,7 +165,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
     return (
         <div className="flex flex-col h-screen mx-auto p-6 md:p-10">
             {/* Header */}
-            <header className="bg-secondary items-center justify-center flex shadow md:mx-10 mb-4 md:mb-10 ">
+            <header className="bg-accent text-accent-foreground border-border border rounded-md items-center justify-center flex shadow md:mx-10 mb-4 md:mb-10 ">
                 <div className="w-72 md:w-full px-10 py-6 flex justify-center md:justify-between items-center">
                     <div className="flex flex-col items-center md:items-start">
                         <h1 className="truncate text-3xl font-bold text-foreground">{event.name}</h1>
@@ -175,12 +174,11 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                     <div className="flex items-center md:gap-4 hidden md:flex md:ml-10">
                         {eventData.status !== 'CONFIRMED' && (
                             <Link href={`/event/${event.id}/newidea`}>
-                                <Button className="bg-primary text-primary-foreground flex items-center">
+                                <Button className="border-border border bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground flex items-center">
                                     <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
                                 </Button>
                             </Link>
                         )}
-                        <ThemeToggler />
                     </div>
                 </div>
             </header>
@@ -189,7 +187,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
             <div className="flex items-center justify-end md:hidden mb-6">
                 {eventData.status !== 'CONFIRMED' && (
                     <Link href={`/event/${event.id}/newidea`}>
-                        <Button className="bg-primary text-primary-foreground flex items-center">
+                        <Button className="border-border border bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground  flex items-center">
                             <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
                         </Button>
                     </Link>
@@ -201,17 +199,17 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                 <div>
                     <div className="mb-2 text-md ">Event Confirmed:</div>
                     {eventData.confirmedIdea && (
-                        <Card className="bg-card text-card-foreground">
+                        <Card className="border-border border bg-background text-foreground">
                             <CardHeader>
                                 <CardTitle className="truncate text-lg leading-tight">
                                     {eventData.confirmedIdea.title}
                                 </CardTitle>
-                                <CardDescription className="truncate text-card-foreground">
+                                <CardDescription className="truncate">
                                     By {eventData.confirmedIdea.author.firstName} {eventData.confirmedIdea.author.lastName}
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-sm text-card-foreground">
+                                <p className="text-sm">
                                     {eventData.confirmedIdea.description}
                                 </p>
                             </CardContent>
@@ -226,18 +224,18 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                                 <Card
                                     key={idea.id}
                                     onClick={() => setSelectedIdeaId(idea.id)}
-                                    className="w-72 hover:shadow-lg transition-shadow duration-300 bg-card text-card-foreground"
+                                    className="w-72 hover:shadow-lg transition-shadow duration-300 border-border border bg-background text-foreground"
                                 >
                                     <CardHeader>
                                         <CardTitle className="truncate text-lg leading-tight">
                                             {idea.title}
                                         </CardTitle>
-                                        <CardDescription className="truncate text-card-foreground">
+                                        <CardDescription className="truncate">
                                             By {idea.author.firstName} {idea.author.lastName}
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-sm text-card-foreground line-clamp-3">
+                                        <p className="text-sm line-clamp-3">
                                             {idea.description}
                                         </p>
                                     </CardContent>
@@ -254,7 +252,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                             ))
                         ) : (
                             <div className="col-span-full text-center">
-                                <p className="text-lg text-gray-500">No ideas yet. Be the first to add one!</p>
+                                <p className="text-lg text-foreground">No ideas yet. Be the first to add one!</p>
                             </div>
                         )}
                     </div>
@@ -267,17 +265,17 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
                 return (
                     <Dialog open={true} onOpenChange={() => setSelectedIdeaId(null)}>
-                        <DialogContent className="w-80 md:w-full">
+                        <DialogContent className="w-80 rounded-md border-border border bg-background text-foreground md:w-full">
                             <DialogHeader>
                                 <DialogTitle className="truncate text-lg font-semibold">
                                     {idea.title}
                                 </DialogTitle>
-                                <DialogDescription className="truncate text-sm text-gray-500">
+                                <DialogDescription className="truncate text-sm">
                                     By {idea.author.firstName} {idea.author.lastName}
                                 </DialogDescription>
                             </DialogHeader>
                             <div className="my-4">
-                                <p className="text-sm text-card-foreground">{idea.description}</p>
+                                <p className="text-sm">{idea.description}</p>
                             </div>
                             <VoteButtons
                                 ideaId={idea.id}

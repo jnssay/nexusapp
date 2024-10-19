@@ -17,7 +17,7 @@ export default async function NewIdeaPage({ params }: { params: { id: string } }
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col">
+      <main className="flex min-h-screen flex-col bg-gradient-to-t from-secondary to-background">
         {/* Pass event ID and event name to the IdeaForm component */}
         <IdeaForm eventId={eventId} eventName={eventDetails?.name || "Unnamed Event"} />
       </main>

@@ -1,10 +1,5 @@
 # NexusMeet
 
-## TO-DO:
-- dynamic event id access from telegram - how to integrate with the bot?
-- confirmation api 404 error right now
-
-
 <br>
 
 ## Project Setup:

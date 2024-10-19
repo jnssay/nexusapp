@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import IdeaBoard from "~/app/_components/IdeaBoard";
-import DisplayInitData from "~/telegram/DisplayInitData";
+import { Spinner } from "~/components/ui/spinner";
 import { useInitData } from '~/telegram/InitDataContext';
 
 export default function EventPage({ params }: { params: { id: string } }) {
@@ -36,7 +36,7 @@ export default function EventPage({ params }: { params: { id: string } }) {
   }, [params.id, user]);
 
   if (loading) {
-    return <div className="flex mt-10 w-full items-center justify-center">Loading event details...</div>;
+    return <Spinner className="mt-10 text-foreground" size="large" />;
   }
 
   if (!event) {
@@ -48,9 +48,8 @@ export default function EventPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <main className="flex min-h-screen flex-col bg-gradient-to-tl from-primary">
+    <main className="flex min-h-screen flex-col bg-gradient-to-t from-secondary to-background">
       <IdeaBoard event={event} />
-      <DisplayInitData />
     </main>
   );
 }
