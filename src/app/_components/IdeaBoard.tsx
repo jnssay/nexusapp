@@ -226,7 +226,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                                 <Card
                                     key={idea.id}
                                     onClick={() => setSelectedIdeaId(idea.id)}
-                                    className="hover:shadow-lg transition-shadow duration-300 bg-card text-card-foreground"
+                                    className="w-72 hover:shadow-lg transition-shadow duration-300 bg-card text-card-foreground"
                                 >
                                     <CardHeader>
                                         <CardTitle className="truncate text-lg leading-tight">

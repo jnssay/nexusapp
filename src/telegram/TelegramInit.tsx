@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import Script from 'next/script';
 import { useInitData } from '~/telegram/InitDataContext';
+import { useRouter } from 'next/navigation';
 
 const TelegramInit: React.FC = () => {
     const { setInitData, setUser } = useInitData();
     const [isSdkLoaded, setIsSdkLoaded] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const checkTelegram = async () => {
@@ -20,6 +22,19 @@ const TelegramInit: React.FC = () => {
 
                 setInitData(parsedData); // Save initData in context
                 setUser(user); // Save user in context
+
+                // Check for start_param and redirect if present
+                if (parsedData.start_param) {
+                    const startParam = parsedData.start_param;
+
+                    if (startParam.endsWith("newidea")) {
+                        // Remove "newidea" from the end of the parameter
+                        const baseParam = startParam.replace("newidea", "");
+                        router.push(`/event/${baseParam}/newidea`);
+                    } else {
+                        router.push(`/event/${startParam}`);
+                    }
+                }
             }
         };
 
@@ -91,5 +106,23 @@ const checkOrCreateUser = async (telegramUserData: Record<string, any>) => {
         console.error("Error:", error);
     }
 };
+
+// Function to apply theme colors based on Telegram theme parameters
+const applyThemeColors = (themeParams: Record<string, any>) => {
+    const root = document.documentElement;
+
+    // Example of applying dynamic colors
+    if (themeParams.bg_color) {
+        root.style.setProperty("--background", themeParams.bg_color);
+    }
+    if (themeParams.text_color) {
+        root.style.setProperty("--foreground", themeParams.text_color);
+    }
+    if (themeParams.link_color) {
+        root.style.setProperty("--primary", themeParams.link_color);
+    }
+    // Add more mappings as needed
+};
+
 
 export default TelegramInit;

@@ -1,5 +1,3 @@
-// app/api/event/[eventId]/confirm/route.ts
-
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import prisma from '~/lib/prisma';
@@ -38,13 +36,23 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
             include: {
                 Idea_Event_confirmedIdeaIdToIdea: {
                     include: {
-                        author: true, // Include author details if needed
+                        author: true, // Include author details of the confirmed idea
                     },
                 },
             },
         });
 
-        const sanitizedEvent = bigIntToString(updatedEvent);
+        // Map the data to include the full confirmed idea details
+        const eventData = {
+            id: updatedEvent.id,
+            name: updatedEvent.name,
+            description: updatedEvent.description,
+            status: updatedEvent.status,
+            confirmedIdea: updatedEvent.Idea_Event_confirmedIdeaIdToIdea, // Include the confirmed idea object
+        };
+
+        // Convert BigInt values to strings
+        const sanitizedEvent = bigIntToString(eventData);
 
         return NextResponse.json(sanitizedEvent, { status: 200 });
     } catch (error) {

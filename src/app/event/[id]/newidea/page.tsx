@@ -9,6 +9,7 @@ export default async function NewIdeaPage({ params }: { params: { id: string } }
   const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/events/${eventId}`);
 
   if (!res.ok) {
+    console.log("fetch failed for page")
     return notFound();
   }
 
