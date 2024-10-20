@@ -84,7 +84,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
 
     return (
         <div className="flex-col max-w-md mx-auto mt-10 md:mt-0 h-screen justify-center items-center md:flex text-foreground">
-            <h1 className="font-bold max-w-72 md:max-w-full text-xl mb-10">Create New Idea for {eventName}!</h1>
+            <h1 className="font-bold max-w-80 md:max-w-full text-xl mb-10">Create New Idea for {eventName}!</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
@@ -96,7 +96,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                                 <FormControl>
                                     <Input className="bg-accent text-accent-foreground placeholder:text-accent-foreground" placeholder="Amazing Idea" {...field} />
                                 </FormControl>
-                                <FormDescription>
+                                <FormDescription className="text-foreground">
                                     The name of your idea for the event.
                                 </FormDescription>
                                 <FormMessage />
@@ -116,9 +116,9 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                                         {...field}
                                     />
                                 </FormControl>
-                                <FormDescription>
+                                <FormDescription className="text-foreground">
                                     Briefly describe your idea for the event.
-                                </FormDescription>
+                                </FormDescription >
                                 <FormMessage />
                             </FormItem>
                         )}
