@@ -12,13 +12,15 @@ datasource db {
 }
 
 model Idea {
+  id                                String     @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   title                             String
   description                       String?
   dislikes                          Int        @default(0)
   likes                             Int        @default(0)
   event_id                          String?    @db.Uuid
-  id                                String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId                            String?    @db.Uuid
+  createdAt                         DateTime   @default(now())
+  updatedAt                         DateTime?  @updatedAt
   Event_Event_confirmedIdeaIdToIdea Event[]    @relation("Event_confirmedIdeaIdToIdea")
   Event                             Event?     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   author                            User?      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -26,11 +28,13 @@ model Idea {
 }
 
 model User {
+  id         String       @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   telegramId BigInt       @unique
   firstName  String
   lastName   String?
   username   String?
-  id         String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?    @updatedAt
   events     Event[]
   EventRSVPs EventRSVPs[]
   ideas      Idea[]
@@ -38,23 +42,29 @@ model User {
 }
 
 model UserVote {
-  type   VoteType
-  id     String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  userId String?  @db.Uuid
-  ideaId String?  @db.Uuid
-  idea   Idea?    @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user   User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id        String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  type      VoteType
+  userId    String?   @db.Uuid
+  ideaId    String?   @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  idea      Idea?     @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Event {
+  id                               String       @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   name                             String
   description                      String?
   chatId                           String       @default("")
   status                           EventStatus
-  id                               String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId                           String?      @db.Uuid
   messageId                        String?
   confirmedIdeaId                  String?      @db.Uuid
+  topicId                          String?
+  rsvpSent                         Boolean      @default(false)
+  createdAt                        DateTime     @default(now())
+  updatedAt                        DateTime?    @updatedAt
   Idea_Event_confirmedIdeaIdToIdea Idea?        @relation("Event_confirmedIdeaIdToIdea", fields: [confirmedIdeaId], references: [id], onUpdate: NoAction)
   author                           User?        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   EventRSVPs                       EventRSVPs[]
@@ -62,12 +72,14 @@ model Event {
 }
 
 model EventRSVPs {
-  id        String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id        String     @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   eventId   String     @db.Uuid
   userId    String     @db.Uuid
   chatId    String
   status    RSVPStatus
   messageId String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
   Event     Event      @relation(fields: [eventId], references: [id])
   User      User       @relation(fields: [userId], references: [id])
 }

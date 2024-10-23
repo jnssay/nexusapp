@@ -196,7 +196,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
             {/* Scrollable Cards Container */}
             {eventData.status === 'CONFIRMED' ? (
-                <div>
+                <div className="flex flex-col overflow-y-auto md:px-10 custom-scrollbar text-foreground">
                     <div className="mb-2 text-md ">Event Confirmed:</div>
                     {eventData.confirmedIdea && (
                         <Card className="border-border border bg-background text-foreground">
@@ -209,7 +209,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-sm">
+                                <p className="text-sm break-all">
                                     {eventData.confirmedIdea.description}
                                 </p>
                             </CardContent>

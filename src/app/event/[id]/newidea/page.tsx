@@ -17,9 +17,14 @@ export default async function NewIdeaPage({ params }: { params: { id: string } }
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col bg-gradient-to-t from-secondary to-background">
-        {/* Pass event ID and event name to the IdeaForm component */}
-        <IdeaForm eventId={eventId} eventName={eventDetails?.name || "Unnamed Event"} />
+      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-t from-secondary to-background">
+        {eventDetails?.status === "CONFIRMED" ? (
+          <p className="text-center text-lg font-semibold text-foreground">
+            Event already confirmed!
+          </p>
+        ) : (
+          <IdeaForm eventId={eventId} eventName={eventDetails?.name || "Unnamed Event"} />
+        )}
       </main>
     </HydrateClient>
   );
