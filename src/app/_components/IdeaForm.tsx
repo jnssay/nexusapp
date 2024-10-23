@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -17,9 +18,8 @@ import {
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { useInitData } from "~/telegram/InitDataContext";
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { useRouter } from 'next/navigation';
 
-// Validation schema
 const formSchema = z.object({
     ideaName: z.string().min(2, {
         message: "Idea name must be at least 2 characters.",
@@ -30,11 +30,14 @@ const formSchema = z.object({
 });
 
 interface IdeaFormProps {
-    eventId: string; // Pass event ID as prop
-    eventName: string; // Pass event name as prop (optional)
+    eventId: string;
+    eventName: string;
 }
 
 export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
+    const { user } = useInitData();
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -43,9 +46,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
         },
     });
 
-    // Use the custom hook to get the user data
-    const { user } = useInitData();
-    const router = useRouter(); // Initialize router
+    const { handleSubmit, formState } = form;
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         if (!user) {
@@ -54,7 +55,6 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
         }
 
         try {
-            // Submit the idea with the event ID and user ID in the request
             const response = await fetch(`/api/idea/${eventId}`, {
                 method: 'POST',
                 headers: {
@@ -64,7 +64,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                     title: values.ideaName,
                     description: values.description,
                     eventId,
-                    userId: user.id, // Include user ID from the context
+                    userId: user.id,
                 }),
             });
 
@@ -74,6 +74,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
 
             const data = await response.json();
             console.log('Idea created successfully:', data);
+
             // Redirect to the event page
             router.push(`/event/${eventId}`);
         } catch (error) {
@@ -84,9 +85,12 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
 
     return (
         <div className="flex-col max-w-md mx-auto mt-10 md:mt-0 h-screen justify-center items-center md:flex text-foreground">
-            <h1 className="font-bold w-72 md:w-full text-lg mb-10 line-clamp-2 overflow-hidden">Create New Idea for {eventName}!</h1>
+            <h1 className="font-bold w-72 md:w-full text-lg mb-10 line-clamp-2 overflow-hidden">
+                Create New Idea for {eventName}!
+            </h1>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                    {/* Idea Name Field */}
                     <FormField
                         control={form.control}
                         name="ideaName"
@@ -94,7 +98,11 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                             <FormItem>
                                 <FormLabel>Idea Name</FormLabel>
                                 <FormControl>
-                                    <Input className="bg-accent text-accent-foreground placeholder:text-accent-foreground w-72 md:w-96" placeholder="Amazing Idea" {...field} />
+                                    <Input
+                                        className="bg-accent text-accent-foreground placeholder:text-accent-foreground w-72 md:w-96"
+                                        placeholder="Amazing Idea"
+                                        {...field}
+                                    />
                                 </FormControl>
                                 <FormDescription className="text-foreground">
                                     The name of your idea for the event.
@@ -103,6 +111,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                             </FormItem>
                         )}
                     />
+                    {/* Description Field */}
                     <FormField
                         control={form.control}
                         name="description"
@@ -118,16 +127,23 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                                 </FormControl>
                                 <FormDescription className="text-foreground">
                                     Briefly describe your idea for the event.
-                                </FormDescription >
+                                </FormDescription>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
+                    {/* Action Buttons */}
                     <div className="justify-between flex">
                         <Link href={`/event/${eventId}`}>
                             <Button variant="muted">Back</Button>
                         </Link>
-                        <Button variant="default" type="submit">Submit</Button>
+                        <Button
+                            variant="default"
+                            type="submit"
+                            disabled={formState.isSubmitting}
+                        >
+                            {formState.isSubmitting ? 'Submitting...' : 'Submit'}
+                        </Button>
                     </div>
                 </form>
             </Form>

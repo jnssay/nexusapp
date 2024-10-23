@@ -4,7 +4,6 @@
 - Event confirmation:
     - show other ideas that were unchosen, with read-only votes
 - back button should not go to the redirect page
-- if user clicks submit idea multiple times, it should only send once into backend
 
 
 <br>
