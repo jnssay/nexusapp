@@ -2,10 +2,11 @@
 
 ## To-do:
 - Event confirmation:
-    - add in read-only votes
-    - add in dialog box for opening the idea
     - show other ideas that were unchosen, with read-only votes
-- Confirmed events should not have event creation
+- back button should not go to the redirect page
+- delete button
+- edit idea button
+- add popup to confirm that event will be confirmed and message will be sent
 
 
 <br>

@@ -158,14 +158,11 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
         }
     };
 
-    console.log("eventData:", eventData)
-    console.log("eventData confirmed idea:", eventData.confirmedIdea)
-    console.log("eventData status:", eventData.status)
 
     return (
         <div className="flex flex-col h-screen mx-auto py-6 md:p-10">
             {/* Header */}
-            <header className="bg-accent text-accent-foreground border-border border rounded-md items-center justify-center flex shadow md:mx-10 mb-4 md:mb-10 ">
+            <header className="bg-accent text-accent-foreground border-border border rounded-md items-center justify-center flex shadow md:mx-10 md:mb-10 ">
                 <div className="w-80 md:w-full py-6 md:mx-10 flex justify-center md:justify-between items-center">
                     <div className="flex flex-col items-center md:items-start">
                         <h1 className="text-xl font-bold text-foreground text-center line-clamp-2 overflow-hidden break-all px-4 md:px-0">{event.name}</h1>
@@ -187,7 +184,7 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
             <div className="flex items-center justify-end md:hidden mb-6">
                 {eventData.status !== 'CONFIRMED' && (
                     <Link href={`/event/${event.id}/newidea`}>
-                        <Button className="border-border border bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground  flex items-center">
+                        <Button className="mt-4 border-border border bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground  flex items-center">
                             <TbCirclePlus className="mr-2 h-4 w-4" /> New Idea
                         </Button>
                     </Link>
@@ -196,10 +193,10 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
 
             {/* Scrollable Cards Container */}
             {eventData.status === 'CONFIRMED' ? (
-                <div className="flex flex-col overflow-y-auto md:px-10 custom-scrollbar text-foreground items-center justify-center">
-                    <div className="mb-2 text-md ">Event Confirmed:</div>
+                <div className="flex flex-col md:px-10 text-foreground items-center justify-start">
+                    <div className="mb-2 text-md ">Confirmed:</div>
                     {eventData.confirmedIdea && (
-                        <Card className="w-72 hover:shadow-lg transition-shadow duration-300 border-border border bg-background text-foreground">
+                        <Card className="w-80 hover:shadow-lg transition-shadow duration-300 border-border border bg-background text-foreground">
                             <CardHeader>
                                 <CardTitle className="truncate text-lg leading-tight">
                                     {eventData.confirmedIdea.title}
@@ -208,13 +205,25 @@ const IdeaBoard: React.FC<IdeaBoardProps> = ({ event }) => {
                                     By {eventData.confirmedIdea.author.firstName} {eventData.confirmedIdea.author.lastName}
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent >
-                                <p className="text-sm line-clamp-3">
+                            <CardContent>
+                                <p className="h-48 text-sm overflow-y-auto custom-scrollbar">
                                     {eventData.confirmedIdea.description}
                                 </p>
                             </CardContent>
+                            <CardFooter>
+                                <VoteButtons
+                                    ideaId={eventData.confirmedIdea.id}
+                                    likes={eventData.confirmedIdea.likes}
+                                    dislikes={eventData.confirmedIdea.dislikes}
+                                    userVote={eventData.confirmedIdea.userVote}
+                                    handleVote={() => { }}
+                                    readOnly
+                                />
+                            </CardFooter>
                         </Card>
                     )}
+
+
                 </div>
             ) : (
                 <div className="flex overflow-y-auto justify-center md:px-10 custom-scrollbar">

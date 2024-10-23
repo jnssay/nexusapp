@@ -83,7 +83,7 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
     }
 
     return (
-        <div className="flex-col max-w-md mx-auto mt-10 md:mt-0 h-screen justify-center items-center md:flex text-foreground bg-gradient-to-t from-secondary to-background">
+        <div className="flex-col max-w-md mx-auto mt-10 md:mt-0 h-screen justify-center items-center md:flex text-foreground">
             <h1 className="font-bold w-72 md:w-full text-lg mb-10 line-clamp-2 overflow-hidden">Create New Idea for {eventName}!</h1>
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

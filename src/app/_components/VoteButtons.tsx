@@ -8,6 +8,7 @@ interface VoteButtonsProps {
     userVote: 'LIKE' | 'DISLIKE' | null;
     handleVote: (ideaId: string, voteType: 'LIKE' | 'DISLIKE') => void;
     className?: string;
+    readOnly?: boolean;
 }
 
 const VoteButtons: React.FC<VoteButtonsProps> = ({
@@ -17,6 +18,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
     userVote,
     handleVote,
     className = '',
+    readOnly = false,
 }) => {
     const [isTouchDevice, setIsTouchDevice] = useState(false);
 
@@ -29,18 +31,20 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
     }, []);
 
     return (
-        <div className={`flex w-full items-center justify-between ${className}`}>
+        <div className={`flex w-full items-center ${readOnly ? 'justify-end' : 'justify-between'} ${className}`}>
             <button
                 onClick={(e) => {
+                    if (readOnly) return; // Disable click if read-only
                     e.stopPropagation();
                     handleVote(ideaId, 'LIKE');
                 }}
                 className={`flex items-center px-2 py-1 rounded border-box ${userVote === 'LIKE'
                     ? 'border border-green-600 text-green-600'
                     : 'border border-transparent text-primary'
-                    } ${!isTouchDevice ? 'hover:text-green-600' : ''}`} // Conditionally add hover class
+                    } ${!isTouchDevice && !readOnly ? 'hover:text-green-600' : ''}`} // Disable hover when read-only
                 aria-label="Upvote Idea"
-                style={{ boxSizing: 'border-box', minHeight: '36px', outline: 'none' }} // Ensure consistent height
+                style={{ boxSizing: 'border-box', minHeight: '36px', outline: 'none' }}
+                disabled={readOnly} // Disable button when read-only
             >
                 <TbThumbUpFilled className="mr-1" />
                 {likes}
@@ -48,15 +52,17 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
 
             <button
                 onClick={(e) => {
+                    if (readOnly) return; // Disable click if read-only
                     e.stopPropagation();
                     handleVote(ideaId, 'DISLIKE');
                 }}
                 className={`flex items-center px-2 py-1 rounded border-box ${userVote === 'DISLIKE'
                     ? 'border border-red-600 text-red-600'
                     : 'border border-transparent text-primary'
-                    } ${!isTouchDevice ? 'hover:text-red-600' : ''}`} // Conditionally add hover class
+                    } ${!isTouchDevice && !readOnly ? 'hover:text-red-600' : ''}`} // Disable hover when read-only
                 aria-label="Downvote Idea"
-                style={{ boxSizing: 'border-box', minHeight: '36px', outline: 'none' }} // Ensure consistent height
+                style={{ boxSizing: 'border-box', minHeight: '36px', outline: 'none' }}
+                disabled={readOnly} // Disable button when read-only
             >
                 <TbThumbDownFilled className="mr-1" />
                 {dislikes}
