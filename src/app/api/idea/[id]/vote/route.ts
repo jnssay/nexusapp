@@ -103,6 +103,8 @@ export async function POST(
             likes: updatedIdea.likes,
             dislikes: updatedIdea.dislikes,
             author: updatedIdea.author,
+            createdAt: updatedIdea.createdAt,  // Include createdAt
+            updatedAt: updatedIdea.updatedAt,  // Include updatedAt
             userVote:
                 updatedIdea.userVotes[0]?.type === 'LIKE'
                     ? 'LIKE'

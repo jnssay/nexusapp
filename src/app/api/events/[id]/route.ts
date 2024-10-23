@@ -66,6 +66,10 @@ export async function GET(
                     dislikes: idea.dislikes,
                     author: idea.author,
                     userVote,
+                    createdAt: idea.createdAt ? new Date(idea.createdAt).toISOString() : null,
+                    updatedAt: idea.updatedAt ? new Date(idea.updatedAt).toISOString() : null,
+                    editedAt: idea.editedAt ? new Date(idea.editedAt).toISOString() : null,
+
                 };
             }),
         };

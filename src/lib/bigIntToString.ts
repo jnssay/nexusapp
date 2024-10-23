@@ -7,19 +7,28 @@
  * @returns A new object with BigInt values converted to strings.
  */
 export function bigIntToString(obj: any): any {
-    if (typeof obj !== 'object' || obj === null) return obj;
-    if (Array.isArray(obj)) return obj.map(bigIntToString);
+    if (obj === null || obj === undefined) return obj;
 
-    const newObj: any = {};
-    for (const key in obj) {
-        const value = obj[key];
-        if (typeof value === 'bigint') {
-            newObj[key] = value.toString();
-        } else if (typeof value === 'object') {
-            newObj[key] = bigIntToString(value);
-        } else {
-            newObj[key] = value;
-        }
+    if (Array.isArray(obj)) {
+        return obj.map((item) => bigIntToString(item));
     }
-    return newObj;
+
+    if (typeof obj === 'object') {
+        const result: any = {};
+        for (const key of Object.keys(obj)) {
+            const value = obj[key];
+            if (typeof value === 'bigint') {
+                result[key] = value.toString(); // Convert BigInt to string
+            } else if (Object.prototype.toString.call(value) === '[object Date]') {
+                result[key] = value.toISOString(); // Convert DateTime to ISO string
+            } else if (typeof value === 'object' && value !== null) {
+                result[key] = bigIntToString(value); // Recursively handle nested objects
+            } else {
+                result[key] = value;
+            }
+        }
+        return result;
+    }
+
+    return obj;
 }

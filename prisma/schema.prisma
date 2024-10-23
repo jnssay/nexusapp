@@ -19,8 +19,9 @@ model Idea {
   likes                             Int        @default(0)
   event_id                          String?    @db.Uuid
   userId                            String?    @db.Uuid
-  createdAt                         DateTime   @default(now())
-  updatedAt                         DateTime?  @updatedAt
+  createdAt                         DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt                         DateTime   @updatedAt @db.Timestamptz(6)
+  editedAt                          DateTime?  @db.Timestamptz(6)
   Event_Event_confirmedIdeaIdToIdea Event[]    @relation("Event_confirmedIdeaIdToIdea")
   Event                             Event?     @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   author                            User?      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -33,8 +34,8 @@ model User {
   firstName  String
   lastName   String?
   username   String?
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime?    @updatedAt
+  createdAt  DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime     @updatedAt @db.Timestamptz(6)
   events     Event[]
   EventRSVPs EventRSVPs[]
   ideas      Idea[]
@@ -42,14 +43,12 @@ model User {
 }
 
 model UserVote {
-  id        String    @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  type      VoteType
-  userId    String?   @db.Uuid
-  ideaId    String?   @db.Uuid
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  idea      Idea?     @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user      User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id     String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  type   VoteType
+  userId String?  @db.Uuid
+  ideaId String?  @db.Uuid
+  idea   Idea?    @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user   User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Event {
@@ -63,8 +62,8 @@ model Event {
   confirmedIdeaId                  String?      @db.Uuid
   topicId                          String?
   rsvpSent                         Boolean      @default(false)
-  createdAt                        DateTime     @default(now())
-  updatedAt                        DateTime?    @updatedAt
+  createdAt                        DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt                        DateTime     @updatedAt @db.Timestamptz(6)
   Idea_Event_confirmedIdeaIdToIdea Idea?        @relation("Event_confirmedIdeaIdToIdea", fields: [confirmedIdeaId], references: [id], onUpdate: NoAction)
   author                           User?        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   EventRSVPs                       EventRSVPs[]
@@ -78,8 +77,8 @@ model EventRSVPs {
   chatId    String
   status    RSVPStatus
   messageId String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime?  @updatedAt
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(6)
   Event     Event      @relation(fields: [eventId], references: [id])
   User      User       @relation(fields: [userId], references: [id])
 }

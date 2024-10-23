@@ -124,10 +124,10 @@ export default function IdeaForm({ eventId, eventName }: IdeaFormProps) {
                         )}
                     />
                     <div className="justify-between flex">
-                        <Button className="hover:bg-secondary hover:text-secondary-foreground" type="submit">Submit</Button>
                         <Link href={`/event/${eventId}`}>
-                            <Button className="hover:bg-accent hover:text-accent-foreground" variant="outline">Back</Button>
+                            <Button variant="muted">Back</Button>
                         </Link>
+                        <Button variant="default" type="submit">Submit</Button>
                     </div>
                 </form>
             </Form>

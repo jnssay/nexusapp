@@ -4,9 +4,7 @@
 - Event confirmation:
     - show other ideas that were unchosen, with read-only votes
 - back button should not go to the redirect page
-- delete button
-- edit idea button
-- add popup to confirm that event will be confirmed and message will be sent
+- if user clicks submit idea multiple times, it should only send once into backend
 
 
 <br>

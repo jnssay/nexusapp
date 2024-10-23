@@ -19,8 +19,9 @@ CREATE TABLE "Idea" (
     "likes" INTEGER NOT NULL DEFAULT 0,
     "event_id" UUID,
     "userId" UUID,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
+    "editedAt" TIMESTAMPTZ(6),
 
     CONSTRAINT "Idea_pkey" PRIMARY KEY ("id")
 );
@@ -32,8 +33,8 @@ CREATE TABLE "User" (
     "firstName" TEXT NOT NULL,
     "lastName" TEXT,
     "username" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -44,8 +45,6 @@ CREATE TABLE "UserVote" (
     "type" "VoteType" NOT NULL,
     "userId" UUID,
     "ideaId" UUID,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "UserVote_pkey" PRIMARY KEY ("id")
 );
@@ -62,8 +61,8 @@ CREATE TABLE "Event" (
     "confirmedIdeaId" UUID,
     "topicId" TEXT,
     "rsvpSent" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
 );
@@ -76,8 +75,8 @@ CREATE TABLE "EventRSVPs" (
     "chatId" TEXT NOT NULL,
     "status" "RSVPStatus" NOT NULL,
     "messageId" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "EventRSVPs_pkey" PRIMARY KEY ("id")
 );
