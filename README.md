@@ -1,5 +1,13 @@
 # NexusMeet
 
+## To-do:
+- Event confirmation:
+    - add in read-only votes
+    - add in dialog box for opening the idea
+    - show other ideas that were unchosen, with read-only votes
+- Confirmed events should not have event creation
+
+
 <br>
 
 ## Project Setup:
