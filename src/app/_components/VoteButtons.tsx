@@ -6,10 +6,11 @@ interface VoteButtonsProps {
     likes: number;
     dislikes: number;
     userVote: 'LIKE' | 'DISLIKE' | null;
-    handleVote: (ideaId: string, voteType: 'LIKE' | 'DISLIKE') => void;
+    handleVote?: (ideaId: string, voteType: 'LIKE' | 'DISLIKE') => void;
     className?: string;
     readOnly?: boolean;
 }
+
 
 const VoteButtons: React.FC<VoteButtonsProps> = ({
     ideaId,
@@ -34,10 +35,11 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
         <div className={`flex w-full items-center ${readOnly ? 'justify-end' : 'justify-between'} ${className}`}>
             <button
                 onClick={(e) => {
-                    if (readOnly) return; // Disable click if read-only
+                    if (readOnly || !handleVote) return; // Disable click if read-only or handleVote is undefined
                     e.stopPropagation();
                     handleVote(ideaId, 'LIKE');
                 }}
+                
                 className={`flex items-center px-2 py-1 rounded border-box ${userVote === 'LIKE'
                     ? 'border border-green-600 text-green-600'
                     : 'border border-transparent text-primary'
@@ -52,10 +54,11 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
 
             <button
                 onClick={(e) => {
-                    if (readOnly) return; // Disable click if read-only
+                    if (readOnly || !handleVote) return; // Disable click if read-only or handleVote is undefined
                     e.stopPropagation();
-                    handleVote(ideaId, 'DISLIKE');
+                    handleVote(ideaId, 'LIKE');
                 }}
+                
                 className={`flex items-center px-2 py-1 rounded border-box ${userVote === 'DISLIKE'
                     ? 'border border-red-600 text-red-600'
                     : 'border border-transparent text-primary'

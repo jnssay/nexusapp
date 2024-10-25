@@ -128,12 +128,12 @@ const hexToHSL = (hex: string) => {
     b /= 255;
 
     // Find the maximum and minimum values to get luminance
-    let max = Math.max(r, g, b);
-    let min = Math.min(r, g, b);
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
     let h = 0, s = 0, l = (max + min) / 2;
 
     if (max !== min) {
-        let d = max - min;
+        const d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
         switch (max) {
             case r:
