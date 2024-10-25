@@ -56,7 +56,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({
                 onClick={(e) => {
                     if (readOnly || !handleVote) return; // Disable click if read-only or handleVote is undefined
                     e.stopPropagation();
-                    handleVote(ideaId, 'LIKE');
+                    handleVote(ideaId, 'DISLIKE');
                 }}
                 
                 className={`flex items-center px-2 py-1 rounded border-box ${userVote === 'DISLIKE'

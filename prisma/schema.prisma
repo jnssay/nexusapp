@@ -49,6 +49,8 @@ model UserVote {
   ideaId String?  @db.Uuid
   idea   Idea?    @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user   User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt  DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime     @default(now()) @updatedAt @db.Timestamptz(6)
 }
 
 model Event {
