@@ -4,66 +4,55 @@ import { useEffect, useState } from "react";
 import IdeaBoard from "~/app/_components/IdeaBoard";
 import { Spinner } from "~/components/ui/spinner";
 import { useInitData } from '~/telegram/InitDataContext';
-import { useSearchParams, useRouter } from 'next/navigation'; // Updated import
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Toaster } from "~/components/ui/toaster"
 import { useToast } from "~/hooks/use-toast"
-
-
 
 export default function EventPage({ params }: { params: { id: string } }) {
   const { user } = useInitData();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
-  const searchParams = useSearchParams(); // Use this to read query params
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
 
+  // Check and display message notification only once
   useEffect(() => {
-    const message = searchParams.get('message'); // Retrieve the message query parameter
-
+    const message = searchParams.get('message');
     if (message === 'event-confirmed') {
-      // Show popup notification using `shadcn` toast
       toast({
         title: "Event already confirmed!",
         description: "Cannot add ideas to a confirmed event.",
-        variant: "default", // Use the appropriate variant if needed
       });
 
-      // Remove the query parameter to avoid showing the message again on a page refresh
       const newSearchParams = new URLSearchParams(searchParams.toString());
       newSearchParams.delete("message");
       router.replace(`/event/${params.id}?${newSearchParams.toString()}`);
     }
   }, [searchParams, router, params.id, toast]);
 
-
-  // Fetch the event data based on eventId and userId
+  // Fetch event data only if user is loaded
   useEffect(() => {
-    if (user) { // Wait until user is available
+    if (user) {
       const fetchEvent = async () => {
+        setLoading(true);
         try {
-          // Include the userId as a query parameter
           const response = await fetch(`/api/events/${params.id}?userId=${user.id}`);
-
-          if (!response.ok) {
-            throw new Error(`Failed to fetch event: ${response.status}`);
-          }
-
+          if (!response.ok) throw new Error(`Failed to fetch event: ${response.status}`);
           const data = await response.json();
           setEvent(data);
-          setLoading(false);
         } catch (error) {
           console.error("Failed to fetch event:", error);
+        } finally {
           setLoading(false);
         }
       };
-
       fetchEvent();
     }
   }, [params.id, user]);
 
   if (loading) {
-    return <Spinner className="mt-10 text-foreground" size="large" />;
+    return <div className="mt-10 flex w-full justify-center text-foreground"> LOADING EVENT DATA </div>;
   }
 
   if (!event) {

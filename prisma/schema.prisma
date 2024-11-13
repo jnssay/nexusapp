@@ -12,7 +12,7 @@ datasource db {
 }
 
 model Idea {
-  id                                String     @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                                String     @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title                             String
   description                       String?
   dislikes                          Int        @default(0)
@@ -29,7 +29,7 @@ model Idea {
 }
 
 model User {
-  id         String       @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id         String       @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   telegramId BigInt       @unique
   firstName  String
   lastName   String?
@@ -43,18 +43,18 @@ model User {
 }
 
 model UserVote {
-  id     String   @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  type   VoteType
-  userId String?  @db.Uuid
-  ideaId String?  @db.Uuid
-  idea   Idea?    @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user   User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  createdAt  DateTime     @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime     @default(now()) @updatedAt @db.Timestamptz(6)
+  id        String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type      VoteType
+  userId    String?  @db.Uuid
+  ideaId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  idea      Idea?    @relation(fields: [ideaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Event {
-  id                               String       @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id                               String       @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                             String
   description                      String?
   chatId                           String       @default("")
@@ -73,7 +73,7 @@ model Event {
 }
 
 model EventRSVPs {
-  id        String     @id @unique @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  id        String     @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   eventId   String     @db.Uuid
   userId    String     @db.Uuid
   chatId    String
